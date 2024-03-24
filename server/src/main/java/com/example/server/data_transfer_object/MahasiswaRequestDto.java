@@ -1,7 +1,5 @@
 package com.example.server.data_transfer_object;
 
-import java.time.LocalDate;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
