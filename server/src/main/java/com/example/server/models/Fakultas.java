@@ -19,6 +19,6 @@ public class Fakultas {
     @Column(name ="id", length = 36, nullable=false)
     private String id;
 
-    @Column(name = "nama_dosen")
-    private String teacherName;
+    @Column(name = "nama_fakultas")
+    private String namaFakultas;
 }
