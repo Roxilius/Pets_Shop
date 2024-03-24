@@ -31,6 +31,7 @@ public class RegistrationServiceImpl implements RegistrationService{
     UsersRepository usersRepository;
     @Autowired
     MahasiswaRepository mahasiswaRepository;
+    
     @Transactional
     @Override
     public Mahasiswa register(MahasiswaRequestDto dto) {
