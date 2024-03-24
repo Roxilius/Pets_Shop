@@ -5,10 +5,14 @@ import java.time.LocalDate;
 
 import org.hibernate.annotations.UuidGenerator;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Lob;
+import jakarta.persistence.OneToOne;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -45,5 +49,8 @@ public class Mahasiswa {
     @Column(name = "register_date")
     private LocalDate registerDate;
 
-    
+    @OneToOne
+    @JoinColumn(name="users_id", referencedColumnName = "id", nullable = false)
+    @JsonIgnore
+    private Users users;
 }

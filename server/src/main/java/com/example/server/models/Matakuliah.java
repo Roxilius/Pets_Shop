@@ -21,6 +21,4 @@ public class Matakuliah {
     
     @Column(name = "sks", length = 1, nullable=false)
     private Integer sks;
-
-    
 }
