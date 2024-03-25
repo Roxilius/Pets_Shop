@@ -37,7 +37,6 @@ public class RegistrationServiceImpl implements RegistrationService{
     public UsersProfile register(UsersRegistrationRequestDto dto){
         Users user = saveUser(dto);
         UsersProfile profile = saveProfile(dto, user);
-        user.setProfile(profile);
         return profile;
     }
 
@@ -65,6 +64,7 @@ public class RegistrationServiceImpl implements RegistrationService{
             profile.setPhoneNumber(dto.getPhoneNumber());
             profile.setGender(dto.getGender());
             profile.setRegisterDate(LocalDate.now());
+            profile.setUser(user);
             return usersProfileRepository.save(profile);
         }
     }

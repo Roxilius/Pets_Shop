@@ -22,7 +22,7 @@ public class LoginController {
     @Autowired
     LoginService loginService;
     @PostMapping("/login")
-    public ResponseEntity<Object> Login(@RequestBody LoginRequestDto dto){
+    public ResponseEntity<Object> login(@RequestBody LoginRequestDto dto){
         try{
             LoginResponseDto response = loginService.login(dto);
             return ResponseEntity.ok()
@@ -34,6 +34,7 @@ public class LoginController {
         }catch(Exception e){
             return ResponseEntity.internalServerError()
             .body(GenericResponse.eror(e.getMessage()));
+
         }
     }
 }
