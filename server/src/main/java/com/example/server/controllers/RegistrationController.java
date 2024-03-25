@@ -10,12 +10,10 @@ import com.example.server.data_transfer_object.user.UsersRegistrationRequestDto;
 import com.example.server.models.UsersProfile;
 import com.example.server.services.register.RegistrationService;
 
-import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.web.bind.annotation.RequestBody;
 
 @RestController
-@Slf4j
 public class RegistrationController {
     @Autowired
     RegistrationService registrationService;
