@@ -32,7 +32,7 @@ public class SecurityConfig {
         .authenticationEntryPoint(new CustomUnAuthorizeException())
         .accessDeniedHandler(new CustomAccessDeniedException()))
         .authorizeHttpRequests(auth -> auth
-                .requestMatchers(
+                .requestMatchers("/register",
                     "/v3/api-docs/**",
                     "/swagger-ui/**")
                 .permitAll()
