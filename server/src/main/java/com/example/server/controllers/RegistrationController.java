@@ -25,7 +25,7 @@ public class RegistrationController {
     public ResponseEntity register(@RequestBody UsersRegistrationRequestDto dto){
         try {
             UsersProfile profile = registrationService.register(dto);
-            return ResponseEntity.ok().body(GenericResponse.success(profile, "Successfully registrasi new student"));
+            return ResponseEntity.ok().body(GenericResponse.success(profile, "Successfully registrasi new user"));
         } catch (Exception e) {
             return ResponseEntity.internalServerError()
             .body(GenericResponse.eror(e.getMessage()));

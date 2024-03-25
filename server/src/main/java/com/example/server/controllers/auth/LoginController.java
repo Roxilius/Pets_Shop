@@ -34,7 +34,6 @@ public class LoginController {
         }catch(Exception e){
             return ResponseEntity.internalServerError()
             .body(GenericResponse.eror(e.getMessage()));
-
         }
     }
 }

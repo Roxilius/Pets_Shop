@@ -16,15 +16,17 @@ import com.example.server.repositorys.UsersRepository;
 public class LoginServiceImpl implements LoginService{
     @Autowired
     UsersRepository usersRepository;
+    
     @Autowired
     PasswordEncoder passwordEncoder;
+
     @Autowired
     JwtUtil jwtUtil;
     @Override
     public LoginResponseDto login(LoginRequestDto dto) {
         Users user = usersRepository.findByUserName(dto.getUserName()).orElse(null);
         if (user != null) {
-            boolean isMatch = passwordEncoder.matches(dto.getPassword(),user.getPassword());
+            boolean isMatch = passwordEncoder.matches(dto.getPassword(), user.getPassword());
             if (isMatch) {
                 LoginResponseDto response = new LoginResponseDto();
                 response.setUserName(user.getUserName());
