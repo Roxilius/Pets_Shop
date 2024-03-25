@@ -37,29 +37,40 @@ public class RegistrationServiceImpl implements RegistrationService{
     public UsersProfile register(UsersRegistrationRequestDto dto){
         Users user = saveUser(dto);
         UsersProfile profile = saveProfile(dto, user);
+        user.setProfile(profile);
         return profile;
     }
 
     private Users saveUser(UsersRegistrationRequestDto dto){
         Users user = new Users();
-        user.setUserName(dto.getEmail());
-        user.setPassword(dto.getPassword());
-        Roles userRoles = rolesRepository.findByRoleName(RolesConstant.USER_ROLE);
-        user.setRoles(userRoles);
-        return usersRepository.save(user);
+        String buff = usersRepository.findByUserName(dto.getUserName());
+        if (dto.getUserName().equals(buff)) {
+            return null;
+        }else{
+            user.setUserName(dto.getUserName());
+            user.setPassword(dto.getPassword());
+            Roles userRoles = rolesRepository.findByRoleName(RolesConstant.USER_ROLE);
+            user.setRoles(userRoles);
+            return usersRepository.save(user);
+        }
     }
 
     private UsersProfile saveProfile(UsersRegistrationRequestDto dto, Users user){
         UsersProfile profile = new UsersProfile();
-        profile.setFullName(dto.getFullName());
-        profile.setEmail(dto.getEmail());
-        LocalDate dateOfBirth = LocalDate.parse(dto.getDateOfBirth(),
-        DateTimeFormatter.ISO_DATE);
-        profile.setDateOfBirth(dateOfBirth);
-        profile.setAddress(dto.getAddress());
-        profile.setPhoneNumber(dto.getPhoneNumber());
-        profile.setGender(dto.getGender());
-        profile.setRegisterDate(LocalDate.now());
-        return usersProfileRepository.save(profile);
+        String buff = usersProfileRepository.findByEmail(dto.getEmail());
+        if (dto.getEmail().equals(buff)) {
+            return null;
+        } else{
+            profile.setFullName(dto.getFullName());
+            profile.setEmail(dto.getEmail());
+            LocalDate dateOfBirth = LocalDate.parse(dto.getDateOfBirth(),
+            DateTimeFormatter.ISO_DATE);
+            profile.setDateOfBirth(dateOfBirth);
+            profile.setAddress(dto.getAddress());
+            profile.setPhoneNumber(dto.getPhoneNumber());
+            profile.setGender(dto.getGender());
+            profile.setRegisterDate(LocalDate.now());
+            return usersProfileRepository.save(profile);
+        }
     }
 }
