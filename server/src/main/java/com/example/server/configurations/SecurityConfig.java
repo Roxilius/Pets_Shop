@@ -33,6 +33,7 @@ public class SecurityConfig {
         .accessDeniedHandler(new CustomAccessDeniedException()))
         .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/register",
+                    "/auth/login",
                     "/v3/api-docs/**",
                     "/swagger-ui/**")
                 .permitAll()

@@ -22,20 +22,17 @@ public class LoginServiceImpl implements LoginService{
     JwtUtil jwtUtil;
     @Override
     public LoginResponseDto login(LoginRequestDto dto) {
-        Users user = usersRepository
-                .findByUserName(dto.getUsername())
-                .orElse(null);
+        Users user = usersRepository.findByUserName(dto.getUserName()).orElse(null);
         if (user != null) {
             boolean isMatch = passwordEncoder.matches(dto.getPassword(),user.getPassword());
             if (isMatch) {
                 LoginResponseDto response = new LoginResponseDto();
-                response.setUsername(user.getUserName());
+                response.setUserName(user.getUserName());
                 response.setRole(user.getRoles().getRoleName());
                 response.setToken(jwtUtil.generateToken(user));
                 return response;
             }
         }
-        throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
-        "invalid usename or password");
+        throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"invalid usename or password");
     }
 }
