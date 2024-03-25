@@ -1,4 +1,4 @@
-package com.example.server.initial;
+package com.example.server.init;
 
 import java.util.List;
 
@@ -14,7 +14,6 @@ public class InitialDataLoader implements ApplicationRunner{
     @Autowired
     RolesRepository rolesRepository;
 
-    @SuppressWarnings("null")
     @Override
     public void run(ApplicationArguments args) throws Exception {
         List<Roles> roles = rolesRepository.findAll();

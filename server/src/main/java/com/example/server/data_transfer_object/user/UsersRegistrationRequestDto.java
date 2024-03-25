@@ -11,7 +11,7 @@ public class UsersRegistrationRequestDto {
     // profile user
     private String fullName;
     private String email;
-    private String dateOfBirth; // 2002-10-25 yyyy-MM-dd ISO_8601
+    private String dateOfBirth; //yyyy-MM-dd ISO_8601
     private String address;
     private String phoneNumber;
     private String gender;
