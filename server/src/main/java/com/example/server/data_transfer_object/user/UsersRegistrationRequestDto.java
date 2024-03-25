@@ -9,15 +9,15 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class UsersRegistrationRequestDto {
     // profile user
-    private String fullName;
-    private String email;
-    private String dateOfBirth; //yyyy-MM-dd ISO_8601
-    private String address;
-    private String phoneNumber;
-    private String gender;
-    private String userPhoto;
+    String fullName;
+    String email;
+    String dateOfBirth; //yyyy-MM-dd ISO_8601
+    String address;
+    String phoneNumber;
+    String gender;
+    String userPhoto;
 
     // user
-    private String userName;
-    private String password;
+    String userName;
+    String password;
 }

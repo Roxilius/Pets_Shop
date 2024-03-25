@@ -5,11 +5,13 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
+import org.springframework.stereotype.Component;
 
 import com.example.server.constants.RolesConstant;
 import com.example.server.models.Roles;
 import com.example.server.repositorys.RolesRepository;
 
+@Component
 public class InitialDataLoader implements ApplicationRunner{
     @Autowired
     RolesRepository rolesRepository;
