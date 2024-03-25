@@ -51,21 +51,16 @@ public class RegistrationServiceImpl implements RegistrationService{
 
     private UsersProfile saveProfile(UsersRegistrationRequestDto dto, Users user){
         UsersProfile profile = new UsersProfile();
-        String buff = usersProfileRepository.findByEmail(dto.getEmail());
-        if (dto.getEmail().equals(buff)) {
-            return null;
-        } else{
-            profile.setFullName(dto.getFullName());
-            profile.setEmail(dto.getEmail());
-            LocalDate dateOfBirth = LocalDate.parse(dto.getDateOfBirth(),
-            DateTimeFormatter.ISO_DATE);
-            profile.setDateOfBirth(dateOfBirth);
-            profile.setAddress(dto.getAddress());
-            profile.setPhoneNumber(dto.getPhoneNumber());
-            profile.setGender(dto.getGender());
-            profile.setRegisterDate(LocalDate.now());
-            profile.setUser(user);
-            return usersProfileRepository.save(profile);
-        }
+        profile.setFullName(dto.getFullName());
+        profile.setEmail(dto.getEmail());
+        LocalDate dateOfBirth = LocalDate.parse(dto.getDateOfBirth(),
+        DateTimeFormatter.ISO_DATE);
+        profile.setDateOfBirth(dateOfBirth);
+        profile.setAddress(dto.getAddress());
+        profile.setPhoneNumber(dto.getPhoneNumber());
+        profile.setGender(dto.getGender());
+        profile.setRegisterDate(LocalDate.now());
+        profile.setUser(user);
+        return usersProfileRepository.save(profile);
     }
 }
