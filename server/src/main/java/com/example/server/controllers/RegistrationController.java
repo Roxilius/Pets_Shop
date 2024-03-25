@@ -10,10 +10,12 @@ import com.example.server.data_transfer_object.user.UsersRegistrationRequestDto;
 import com.example.server.models.UsersProfile;
 import com.example.server.services.register.RegistrationService;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 import org.springframework.web.bind.annotation.RequestBody;
 
 @RestController
+@Tag(name = "user")
 public class RegistrationController {
     @Autowired
     RegistrationService registrationService;
