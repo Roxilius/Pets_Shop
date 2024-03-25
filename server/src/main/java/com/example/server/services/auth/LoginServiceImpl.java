@@ -10,12 +10,15 @@ import com.example.server.data_transfer_object.auth.LoginRequestDto;
 import com.example.server.data_transfer_object.auth.LoginResponseDto;
 import com.example.server.jwt.JwtUtil;
 import com.example.server.models.Users;
+import com.example.server.repositorys.UsersProfileRepository;
 import com.example.server.repositorys.UsersRepository;
 
 @Service
 public class LoginServiceImpl implements LoginService{
     @Autowired
     UsersRepository usersRepository;
+    @Autowired
+    UsersProfileRepository usersProfileRepository;
     
     @Autowired
     PasswordEncoder passwordEncoder;
@@ -24,7 +27,9 @@ public class LoginServiceImpl implements LoginService{
     JwtUtil jwtUtil;
     @Override
     public LoginResponseDto login(LoginRequestDto dto) {
+
         Users user = usersRepository.findByUserName(dto.getUserName()).orElse(null);
+        ;
         if (user != null) {
             Boolean isMatch = passwordEncoder.matches(dto.getPassword(), user.getPassword());
             if (isMatch) {

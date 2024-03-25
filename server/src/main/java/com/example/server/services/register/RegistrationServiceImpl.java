@@ -46,7 +46,13 @@ public class RegistrationServiceImpl implements RegistrationService{
         user.setPassword(passwordEncoder.encode(dto.getPassword()));
         Roles userRoles = rolesRepository.findByRoleName(RolesConstant.USER_ROLE);
         user.setRoles(userRoles);
-        return usersRepository.save(user);
+
+        Users usernameMatch = usersRepository.findByUserName(dto.getUserName()).orElse(null);
+        if (usernameMatch.getUserName().equals(user.getUserName())) {
+            return null;
+        } else{
+            return usersRepository.save(user);
+        }
     }
 
     private UsersProfile saveProfile(UsersRegistrationRequestDto dto, Users user){
@@ -61,6 +67,12 @@ public class RegistrationServiceImpl implements RegistrationService{
         profile.setGender(dto.getGender());
         profile.setRegisterDate(LocalDate.now());
         profile.setUser(user);
-        return usersProfileRepository.save(profile);
+
+        UsersProfile profileMatch = usersProfileRepository.findByEmail(dto.getUserName()).orElse(null);
+        if (profileMatch.getEmail().equals(profile.getEmail())) {
+            return null;
+        } else{
+            return usersProfileRepository.save(profile);
+        }
     }
 }
