@@ -43,16 +43,11 @@ public class RegistrationServiceImpl implements RegistrationService{
 
     private Users saveUser(UsersRegistrationRequestDto dto){
         Users user = new Users();
-        String buff = usersRepository.findByUserName(dto.getUserName());
-        if (dto.getUserName().equals(buff)) {
-            return null;
-        }else{
-            user.setUserName(dto.getUserName());
-            user.setPassword(dto.getPassword());
-            Roles userRoles = rolesRepository.findByRoleName(RolesConstant.USER_ROLE);
-            user.setRoles(userRoles);
-            return usersRepository.save(user);
-        }
+        user.setUserName(dto.getUserName());
+        user.setPassword(dto.getPassword());
+        Roles userRoles = rolesRepository.findByRoleName(RolesConstant.USER_ROLE);
+        user.setRoles(userRoles);
+        return usersRepository.save(user);
     }
 
     private UsersProfile saveProfile(UsersRegistrationRequestDto dto, Users user){
