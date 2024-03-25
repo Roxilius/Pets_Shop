@@ -14,6 +14,7 @@ public class InitialDataLoader implements ApplicationRunner{
     @Autowired
     RolesRepository rolesRepository;
 
+    @SuppressWarnings("null")
     @Override
     public void run(ApplicationArguments args) throws Exception {
         List<Roles> roles = rolesRepository.findAll();
