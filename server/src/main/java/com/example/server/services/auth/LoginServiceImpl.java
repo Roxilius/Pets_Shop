@@ -29,7 +29,6 @@ public class LoginServiceImpl implements LoginService{
     public LoginResponseDto login(LoginRequestDto dto) {
 
         Users user = usersRepository.findByUserName(dto.getUserName()).orElse(null);
-        ;
         if (user != null) {
             Boolean isMatch = passwordEncoder.matches(dto.getPassword(), user.getPassword());
             if (isMatch) {
