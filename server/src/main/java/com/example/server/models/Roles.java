@@ -11,10 +11,10 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
+@Table(name = "roles")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name="roles")
 public class Roles {
     @Id
     @UuidGenerator

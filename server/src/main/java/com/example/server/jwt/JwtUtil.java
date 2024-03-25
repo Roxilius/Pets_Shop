@@ -1,22 +1,17 @@
-package com.example.server.security.jwt;
+package com.example.server.jwt;
 
-import java.time.Duration;
-import java.util.Date;
-
+import io.jsonwebtoken.*;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.stereotype.Component;
 
 import com.example.server.models.Users;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.JwtParser;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
-import jakarta.servlet.http.HttpServletRequest;
+import java.time.Duration;
+import java.util.Date;
 
 @Component
 public class JwtUtil {
-    private String secretKey = "ssid2024";
+    private String secretKey = "petshop123";
 
     private Long accessTokenValidity = 60*60*1000L;
 
@@ -81,3 +76,4 @@ public class JwtUtil {
         }
     }
 }
+

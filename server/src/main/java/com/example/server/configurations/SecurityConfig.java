@@ -12,10 +12,10 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 import com.example.server.exception.CustomAccessDeniedException;
 import com.example.server.exception.CustomUnAuthorizeException;
-import com.example.server.security.jwt.JwtFilter;
+import com.example.server.jwt.JwtFilter;
 
 @Configuration
-public class SecutiryConfig {
+public class SecurityConfig {
     @Autowired
     JwtFilter jwtFilter;
     @Bean
@@ -27,14 +27,14 @@ public class SecutiryConfig {
         http
         .csrf(csrf -> csrf.disable())
         .sessionManagement(session ->
-                session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+        session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
         .exceptionHandling(ex -> ex
-                .authenticationEntryPoint(new CustomUnAuthorizeException())
-                .accessDeniedHandler(new CustomAccessDeniedException()))
+        .authenticationEntryPoint(new CustomUnAuthorizeException())
+        .accessDeniedHandler(new CustomAccessDeniedException()))
         .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/auth/**",
-                        "/v3/api-docs/**",
-                        "/swagger-ui/**")
+                .requestMatchers(
+                    "/v3/api-docs/**",
+                    "/swagger-ui/**")
                 .permitAll()
                 .anyRequest().authenticated())
         .addFilterAfter(jwtFilter, UsernamePasswordAuthenticationFilter.class);

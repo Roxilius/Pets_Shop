@@ -1,21 +1,21 @@
-package com.example.server.data_transfer_object;
+package com.example.server.data_transfer_object.user;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
-public class MahasiswaRequestDto {
-    // mahasiswa
-    private String nim;
-    private String mahasiswaName;
+@NoArgsConstructor
+public class UsersRegistrationRequestDto {
+    // profile user
+    private String fullName;
+    private String email;
     private String dateOfBirth; // 2002-10-25 yyyy-MM-dd ISO_8601
-    private String placeOfBirth;
+    private String address;
+    private String phoneNumber;
     private String gender;
-    private String photo;
+    private String userPhoto;
 
     // user
     private String userName;

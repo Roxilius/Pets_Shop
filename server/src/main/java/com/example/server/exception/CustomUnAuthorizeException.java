@@ -8,7 +8,7 @@ import org.springframework.http.MediaType;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
 
-import com.example.server.auth.GenericResponse;
+import com.example.server.data_transfer_object.GenericResponse;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import jakarta.servlet.ServletException;
@@ -24,7 +24,9 @@ public class CustomUnAuthorizeException implements AuthenticationEntryPoint{
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.setCharacterEncoding(StandardCharsets.UTF_8.name());
         response.getWriter().write(objectMapper
-                .writeValueAsString(GenericResponse
-                    .eror("User doesn't have access")));
+        .writeValueAsString(GenericResponse
+        .eror("User doesn't have access")));
     }
+
+   
 }

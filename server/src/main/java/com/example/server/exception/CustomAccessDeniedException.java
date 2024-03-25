@@ -8,7 +8,7 @@ import org.springframework.http.MediaType;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.web.access.AccessDeniedHandler;
 
-import com.example.server.auth.GenericResponse;
+import com.example.server.data_transfer_object.GenericResponse;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import jakarta.servlet.ServletException;
@@ -24,7 +24,9 @@ public class CustomAccessDeniedException implements AccessDeniedHandler{
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.setCharacterEncoding(StandardCharsets.UTF_8.name());
         response.getWriter().write(objectMapper
-                .writeValueAsString(GenericResponse
-                        .eror("Access Denied")));
+        .writeValueAsString(GenericResponse
+        .eror("Access Denied")));
     }
+
+    
 }

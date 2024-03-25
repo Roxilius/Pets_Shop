@@ -7,7 +7,7 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
 @Service
-public class EmailServiceimpl implements EmailService{
+public class EmailServiceImpl implements EmailService{
     @Autowired
     JavaMailSender emailSender;
 
