@@ -43,7 +43,7 @@ public class RegistrationServiceImpl implements RegistrationService{
     private Users saveUser(UsersRegistrationRequestDto dto){
         Users user = new Users();
         user.setUserName(dto.getUserName());
-        user.setPassword(dto.getPassword());
+        user.setPassword(passwordEncoder.encode(dto.getPassword()));
         Roles userRoles = rolesRepository.findByRoleName(RolesConstant.USER_ROLE);
         user.setRoles(userRoles);
         return usersRepository.save(user);
