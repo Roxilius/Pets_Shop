@@ -8,9 +8,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
+import com.example.server.data_transfer_object.GenericResponse;
 import com.example.server.data_transfer_object.auth.LoginRequest;
 import com.example.server.data_transfer_object.auth.LoginResponse;
-import com.example.server.data_transfer_object.register.GenericResponse;
 import com.example.server.services.auth.LoginService;
 
 import io.swagger.v3.oas.annotations.tags.Tag;

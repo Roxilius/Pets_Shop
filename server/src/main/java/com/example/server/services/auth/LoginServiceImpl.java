@@ -16,10 +16,8 @@ import com.example.server.repositorys.UsersRepository;
 public class LoginServiceImpl implements LoginService{
     @Autowired
     UsersRepository usersRepository;
-    
     @Autowired
     PasswordEncoder passwordEncoder;
-
     @Autowired
     JwtUtil jwtUtil;
     @Override
@@ -36,6 +34,6 @@ public class LoginServiceImpl implements LoginService{
                 return response;
             }
         }
-        throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"invalid usename or password");
+        throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Invalid Username or Password");
     }
 }

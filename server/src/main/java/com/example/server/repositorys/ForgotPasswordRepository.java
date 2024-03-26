@@ -11,4 +11,6 @@ import com.example.server.models.Users;
 public interface ForgotPasswordRepository extends JpaRepository<ForgotPassword, String >{
     @Query("select fp from ForgotPassword fp where fp.otp = :otp and fp.user = :user")
     Optional<ForgotPassword> findByOtpAndUser(Integer otp, Users user);
+    @Query
+    Optional<ForgotPassword> findByUser(Users User);
 }

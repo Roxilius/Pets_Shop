@@ -1,4 +1,4 @@
-package com.example.server.data_transfer_object.register;
+package com.example.server.data_transfer_object;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

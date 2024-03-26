@@ -8,7 +8,7 @@ import org.springframework.http.MediaType;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
 
-import com.example.server.data_transfer_object.register.GenericResponse;
+import com.example.server.data_transfer_object.GenericResponse;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import jakarta.servlet.ServletException;

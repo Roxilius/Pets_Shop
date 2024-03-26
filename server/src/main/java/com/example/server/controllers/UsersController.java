@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
-import com.example.server.data_transfer_object.register.GenericResponse;
+import com.example.server.data_transfer_object.GenericResponse;
 import com.example.server.data_transfer_object.register.RegisterRequest;
 import com.example.server.models.Users;
 import com.example.server.services.register.RegisterService;

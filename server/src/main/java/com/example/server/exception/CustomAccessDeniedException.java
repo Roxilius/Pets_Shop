@@ -8,7 +8,7 @@ import org.springframework.http.MediaType;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.web.access.AccessDeniedHandler;
 
-import com.example.server.data_transfer_object.register.GenericResponse;
+import com.example.server.data_transfer_object.GenericResponse;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import jakarta.servlet.ServletException;
