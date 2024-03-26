@@ -1,8 +1,8 @@
 package com.example.server.services.auth;
 
-import com.example.server.data_transfer_object.auth.LoginRequestDto;
-import com.example.server.data_transfer_object.auth.LoginResponseDto;
+import com.example.server.data_transfer_object.auth.LoginRequest;
+import com.example.server.data_transfer_object.auth.LoginResponse;
 
 public interface LoginService {
-    LoginResponseDto login(LoginRequestDto dto);
+    LoginResponse login(LoginRequest request);
 }

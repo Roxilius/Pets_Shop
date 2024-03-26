@@ -32,7 +32,7 @@ public class OpenApiConfig {
         .url("http://mit-test.com");
         
         Info info = new Info()
-        .title("Sistem Informasi Sekolah Dasar")
+        .title("Pets Shop")
         .version("1.0")
         .contact(contact)
         .description("This API is use for sample project of java")

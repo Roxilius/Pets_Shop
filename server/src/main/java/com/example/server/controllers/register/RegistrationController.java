@@ -1,32 +1,30 @@
-package com.example.server.controllers.auth;
+package com.example.server.controllers.register;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
-import com.example.server.data_transfer_object.auth.LoginRequest;
-import com.example.server.data_transfer_object.auth.LoginResponse;
 import com.example.server.data_transfer_object.register.GenericResponse;
-import com.example.server.services.auth.LoginService;
+import com.example.server.data_transfer_object.register.RegisterRequest;
+import com.example.server.models.Users;
+import com.example.server.services.register.RegisterService;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
-@RequestMapping("/auth")
 @Tag(name= "user")
-public class LoginController {
+public class RegistrationController {
     @Autowired
-    LoginService loginService;
-    @PostMapping("/login")
-    public ResponseEntity<Object> login(@RequestBody LoginRequest request){
+    RegisterService registerService;
+    @PostMapping("/register")
+    public ResponseEntity<Object> register(@RequestBody RegisterRequest request){
         try{
-            LoginResponse response = loginService.login(request);
+            Users response = registerService.register(request);
             return ResponseEntity.ok().body(GenericResponse.success(response,
-            "Successfully login"));
+            "Successfully Register New User"));
         }catch(ResponseStatusException e){
             return ResponseEntity.status(e.getStatusCode()).body(GenericResponse.eror(e.getReason()));
         }catch(Exception e){
