@@ -15,9 +15,9 @@ import com.example.server.services.auth.LoginService;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
 
-@RestController
 @RequestMapping("/auth")
-@Tag(name= "user")
+@RestController
+@Tag(name = "user")
 public class LoginController {
     @Autowired
     LoginService loginService;

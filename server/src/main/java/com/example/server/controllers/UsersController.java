@@ -1,4 +1,4 @@
-package com.example.server.controllers.register;
+package com.example.server.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -15,8 +15,8 @@ import com.example.server.services.register.RegisterService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
-@Tag(name= "user")
-public class RegistrationController {
+@Tag(name = "user")
+public class UsersController {
     @Autowired
     RegisterService registerService;
     @PostMapping("/register")
