@@ -29,16 +29,13 @@ public class UploadImageController {
     @RequestParam("UserImage") MultipartFile file){
         try{
             uploadImageService.uploadUserImage(User, file);
-            return ResponseEntity.ok()
-            .body(GenericResponse.success(null,"Successfuly upload image"));
+            return ResponseEntity.ok().body(GenericResponse.success(null,"Successfuly Upload Image"));
         }catch(ResponseStatusException e){
             log.info(e.getMessage());
-            return ResponseEntity.status(e.getStatusCode())
-                .body(GenericResponse.eror(e.getReason()));
+            return ResponseEntity.status(e.getStatusCode()).body(GenericResponse.eror(e.getReason()));
         }catch(Exception e){
             log.info(e.getMessage());
-            return ResponseEntity.internalServerError()
-            .body(GenericResponse.eror(MassageConstant.ERROR_500));
+            return ResponseEntity.internalServerError().body(GenericResponse.eror(MassageConstant.ERROR_500));
         }
     }
 }
