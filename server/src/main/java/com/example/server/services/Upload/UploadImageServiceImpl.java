@@ -2,7 +2,7 @@ package com.example.server.services.Upload;
 
 import java.io.IOException;
 import java.sql.SQLException;
-// import java.util.Objects;
+import java.util.Objects;
 
 import javax.sql.rowset.serial.SerialBlob;
 
@@ -21,12 +21,12 @@ public class UploadImageServiceImpl implements UploadImageService{
     UsersRepository usersRepository;
     @Override
     public void uploadUserImage(String UserId, MultipartFile userImage) throws IOException, SQLException {
-        // String[] fileName = Objects.requireNonNull(userImage.getOriginalFilename()).split("//.");
-        // if (!fileName[fileName.length -1].equalsIgnoreCase("jpg") &&
-        //     !fileName[fileName.length - 1].equalsIgnoreCase("jpeg") &&
-        //     !fileName[fileName.length - 1].equalsIgnoreCase("png")) {
-        //     throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Unsopperted File Type");
-        // }
+        String[] fileName = Objects.requireNonNull(userImage.getOriginalFilename()).split(".");
+        if (!fileName[fileName.length -1].equalsIgnoreCase("jpg") &&
+            !fileName[fileName.length - 1].equalsIgnoreCase("jpeg") &&
+            !fileName[fileName.length - 1].equalsIgnoreCase("png")) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Unsopperted File Type");
+        }
         @SuppressWarnings("null")
         Users user = usersRepository.findById(UserId).orElse(null);
         if (user != null) {
