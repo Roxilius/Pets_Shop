@@ -48,8 +48,8 @@ public class Users {
     private String gender;
 
     @Lob
-    @Column(name = "photo")
-    private Blob photo;
+    @Column(name = "image")
+    private Blob image;
 
     @Column(name = "register_date")
     private LocalDate registerDate;
