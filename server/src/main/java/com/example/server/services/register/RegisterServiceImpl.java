@@ -18,7 +18,7 @@ import com.example.server.repositorys.UsersRepository;
 import com.example.server.services.email.EmailService;
 
 @Service
-public class RegisterServiceImpl implements RegisterService{
+public class RegisterServiceImpl implements RegisterService {
     @Autowired
     UsersRepository usersRepository;
     @Autowired
@@ -42,10 +42,21 @@ public class RegisterServiceImpl implements RegisterService{
             Roles userRoles = rolesRepository.findByRoleName(RolesConstant.USER_ROLE);
             newUser.setRoles(userRoles);
             newUser.setRegisterDate(LocalDate.now());
-            
+
             usersRepository.save(newUser);
+            sendEmail(request.getEmail(), request.getFullName().toUpperCase());
             return newUser;
         }
-        throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Email Sudah Terdaftar");
+        throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Email Sudah Terdaftar");
+    }
+
+    private void sendEmail(String to, String name) {
+        String subject = "Registration New User";
+        String text = 
+            "Selamat Datang, " + name + "\n" +
+            "Kepada Yth " + name + ", Terimakasih sudah mendaftar di Website kami. \n" + 
+            "Email ini akan bermanfaat untuk membantu Anda menggunakan akun diwebsite kami dengan mudah. \n" +
+            "Silahkan login melalui link berikut: (link)";
+        emailSevice.sendSimpleMessage(to, subject, text);
     }
 }
