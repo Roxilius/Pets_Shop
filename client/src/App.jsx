@@ -14,7 +14,7 @@ import { useState } from "react";
 
 function App() {
   const username = 'username';
-  const password = 'ce352a22-8311-40eb-af73-4cb6c609b4c7';
+  const password = '3ee85351-a96d-40a6-8fdb-11724ff001af';
   const basicAuthCredentials = btoa(`${username}:${password}`);
   const authHeader = {
     headers: {

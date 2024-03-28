@@ -11,9 +11,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import com.example.server.exception.CustomAccessDeniedException;
-import com.example.server.exception.CustomUnAuthorizeException;
-import com.example.server.jwt.JwtFilter;
+import com.example.server.security.exception.CustomAccessDeniedException;
+import com.example.server.security.exception.CustomUnAuthorizeException;
+import com.example.server.security.jwt.JwtFilter;
 
 @Configuration
 @EnableWebSecurity

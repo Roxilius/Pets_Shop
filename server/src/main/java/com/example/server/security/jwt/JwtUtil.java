@@ -1,4 +1,4 @@
-package com.example.server.jwt;
+package com.example.server.security.jwt;
 
 import io.jsonwebtoken.*;
 import jakarta.servlet.http.HttpServletRequest;

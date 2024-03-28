@@ -1,4 +1,4 @@
-package com.example.server.data_transfer_object.auth;
+package com.example.server.data_transfer_object.user;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
