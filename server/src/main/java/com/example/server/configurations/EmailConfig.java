@@ -1,4 +1,4 @@
-package com.example.server.security.configurations;
+package com.example.server.configurations;
 
 import java.util.Properties;
 

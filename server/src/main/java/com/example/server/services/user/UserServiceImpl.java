@@ -12,13 +12,9 @@ import javax.sql.rowset.serial.SerialBlob;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -26,14 +22,14 @@ import com.example.server.constants.RolesConstant;
 import com.example.server.data_transfer_object.user.ChangePasswordRequest;
 import com.example.server.data_transfer_object.user.LoginRequest;
 import com.example.server.data_transfer_object.user.LoginResponse;
-import com.example.server.data_transfer_object.user.RegisterRequest;
+import com.example.server.data_transfer_object.user.Register;
+import com.example.server.jwt.JwtUtil;
 import com.example.server.models.ForgotPassword;
 import com.example.server.models.Roles;
 import com.example.server.models.Users;
 import com.example.server.repositorys.ForgotPasswordRepository;
 import com.example.server.repositorys.RolesRepository;
 import com.example.server.repositorys.UsersRepository;
-import com.example.server.security.jwt.JwtUtil;
 import com.example.server.services.email.EmailService;
 
 @Service
@@ -53,7 +49,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public Users register(RegisterRequest request) {
+    public Register register(Register request) {
         Users user = usersRepository.findByEmail(request.getEmail()).orElse(null);
         if (user == null) {
             Users newUser = new Users();
@@ -68,7 +64,7 @@ public class UserServiceImpl implements UserService {
 
             usersRepository.save(newUser);
             sendEmail(request.getEmail(), request.getFullName().toUpperCase());
-            return newUser;
+            return request;
         }
         throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Email Sudah Terdaftar");
     }
@@ -97,7 +93,6 @@ public class UserServiceImpl implements UserService {
     }
     @Override
     public LoginResponse login(LoginRequest request) {
-
         Users user = usersRepository.findByEmail(request.getEmail()).orElse(null);
         if (user != null) {
             Boolean isMatch = passwordEncoder.matches(request.getPassword(), user.getPassword());
@@ -113,9 +108,9 @@ public class UserServiceImpl implements UserService {
     }
     @SuppressWarnings("null")
     @Override
-    public void verifyEmail(@PathVariable String email){
+    public void verifyEmail(String email){
         Users user = usersRepository.findByEmail(email)
-        .orElseThrow(() -> new UsernameNotFoundException("Email Tidak Ditemukan!!"));
+        .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST,"Email Tidak Ditemukan!!"));
         
         int otp = new Random().nextInt(100_000, 999_999);
         ForgotPassword fp = ForgotPassword.builder()
@@ -139,27 +134,27 @@ public class UserServiceImpl implements UserService {
     }
     @SuppressWarnings("null")
     @Override
-    public ResponseEntity<String> verifyOtp(@PathVariable Integer otp, @PathVariable String email){
+    public void verifyOtp(Integer otp, String email){
         Users user = usersRepository.findByEmail(email)
-        .orElseThrow(() -> new UsernameNotFoundException("Email Not Found!!"));
+        .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST,"Email Not Found!!"));
 
         ForgotPassword fp = forgotPasswordRepository.findByOtpAndUser(otp, user)
-        .orElseThrow(() -> new UsernameNotFoundException("Invalid OTP for Email : " + email));
+        .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST,"Invalid OTP for Email : " + email));
 
         if (fp.getExpirationTime().before(Date.from(Instant.now()))) {
             forgotPasswordRepository.deleteById(fp.getId());
-            return new ResponseEntity<>("OTP has Expired", HttpStatus.EXPECTATION_FAILED);
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"OTP has Expired");
         }
         forgotPasswordRepository.deleteById(fp.getId());
-        return ResponseEntity.ok("OTP Verified!!");
     }
     @Override
-    public ResponseEntity<String> changePasswordHandler(@RequestBody ChangePasswordRequest request, @PathVariable String email){
-        if (!Objects.equals(request.getPassword(), request.getRePassword())) {
-            return new ResponseEntity<>("Please Enter the Password Again", HttpStatus.EXPECTATION_FAILED);
+    public void changePasswordHandler(ChangePasswordRequest request,String email){
+        if (usersRepository.findByEmail(email).isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Email Not Found!!");
+        } else if (!Objects.equals(request.getPassword(), request.getRePassword())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Please Enter the Password Again");
         }
         String password = passwordEncoder.encode(request.getPassword());
         usersRepository.updatePassword(password, email);
-        return ResponseEntity.ok("Password has be Changed!");
     }
 }

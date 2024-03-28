@@ -21,22 +21,11 @@ Response Body(success) :
   "success": true,
   "message": "Successfully Register New User",
   "data": {
-    "id": "",
-    "email": "",
-    "password": ".",
     "fullName": "",
-    "dateOfBirth": "",
-    "address": "",
-    "phoneNumber": "",
     "gender": "",
-    "image": "",
-    "registerDate": "",
-    "roles": {
-      "id": "",
-      "roleName": "",
-      "roleDesc": ""
-    },
-    "forgotPassword": ""
+    "phoneNumber": "",
+    "email": "",
+    "password": ""
   }
 }
 ```

@@ -15,8 +15,7 @@ import com.example.server.data_transfer_object.GenericResponse;
 import com.example.server.data_transfer_object.user.ChangePasswordRequest;
 import com.example.server.data_transfer_object.user.LoginRequest;
 import com.example.server.data_transfer_object.user.LoginResponse;
-import com.example.server.data_transfer_object.user.RegisterRequest;
-import com.example.server.models.Users;
+import com.example.server.data_transfer_object.user.Register;
 import com.example.server.services.user.UserService;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -29,10 +28,9 @@ public class UsersController {
     @Autowired
     UserService userService;
     @PostMapping("/register")
-    public ResponseEntity<Object> register(@RequestBody RegisterRequest request){
+    public ResponseEntity<Object> register(@RequestBody Register request){
         try{
-            Users response = userService.register(request);
-            return ResponseEntity.ok().body(GenericResponse.success(response,
+            return ResponseEntity.ok().body(GenericResponse.success(userService.register(request),
             "Successfully Register New User"));
         }catch(ResponseStatusException e){
             return ResponseEntity.status(e.getStatusCode()).body(GenericResponse.eror(e.getReason()));
@@ -55,47 +53,59 @@ public class UsersController {
             return ResponseEntity.internalServerError().body(GenericResponse.eror("Image Upload Failed"));
         }
     }
-
-    @PostMapping("/login")
+    @PostMapping("auth/login")
     public ResponseEntity<Object> login(@RequestBody LoginRequest request){
         try{
             LoginResponse response = userService.login(request);
             return ResponseEntity.ok().body(GenericResponse.success(response,
             "Successfully login"));
         }catch(ResponseStatusException e){
+            log.info(e.getMessage());
+            return ResponseEntity.status(e.getStatusCode()).body(GenericResponse.eror(e.getReason()));
+        }catch(Exception e){
+            log.info(e.getMessage());
+            return ResponseEntity.internalServerError().body(GenericResponse.eror(e.getMessage()));
+        }
+    }
+
+       @PostMapping("auth/verify-email/{email}")
+    public ResponseEntity<Object> verifyEmail(@PathVariable String email){
+        try {
+            userService.verifyEmail(email);
+            return ResponseEntity.ok().body(GenericResponse.success(null, "Cek Your Email For OTP Verification"));
+        }catch(ResponseStatusException e){
+            log.info(e.getMessage());
+            return ResponseEntity.status(e.getStatusCode()).body(GenericResponse.eror(e.getReason()));
+        }catch(Exception e){
+            log.info(e.getMessage());
+            return ResponseEntity.internalServerError().body(GenericResponse.eror(e.getMessage()));
+        }
+    }
+    
+    @PostMapping("auth/verify-otp/{otp}/{email}")
+    public ResponseEntity<Object> verifyOtp(@PathVariable Integer otp, @PathVariable String email){
+        try {
+            userService.verifyOtp(otp, email);
+            return ResponseEntity.ok().body(GenericResponse.success(null, "OTP Verified!!"));
+        }catch(ResponseStatusException e){
+            log.info(e.getMessage());
             return ResponseEntity.status(e.getStatusCode()).body(GenericResponse.eror(e.getReason()));
         }catch(Exception e){
             return ResponseEntity.internalServerError().body(GenericResponse.eror(e.getMessage()));
         }
     }
 
-       @PostMapping("/verify-email/{email}")
-    public ResponseEntity<String> verifyEmail(@PathVariable String email){
-        try {
-            userService.verifyEmail(email);
-            return ResponseEntity.ok("Cek Your Email For OTP Verification");
-        } catch(Exception e){
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
-    }
-        
-    @PostMapping("/verify-otp/{otp}/{email}")
-    public ResponseEntity<String> verifyOtp(@PathVariable Integer otp, @PathVariable String email){
-        try {
-            userService.verifyOtp(otp, email);
-            return ResponseEntity.ok("OTP Verified!!");
-        } catch(Exception e){
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
-    }
-
-    @PostMapping("/change-password/{email}")
-    public ResponseEntity<String> changePasswordHandler(@RequestBody ChangePasswordRequest request, @PathVariable String email){
+    @PostMapping("auth/change-password/{email}")
+    public ResponseEntity<Object> changePasswordHandler(@RequestBody ChangePasswordRequest request, @PathVariable String email){
         try {
             userService.changePasswordHandler(request, email);
-            return ResponseEntity.ok("Password has be Changed!");
-        } catch(Exception e){
-            return ResponseEntity.badRequest().body(e.getMessage());
+            return ResponseEntity.ok().body(GenericResponse.success(null, "Password has be Changed!"));
+        }catch(ResponseStatusException e){
+            log.info(e.getMessage());
+            return ResponseEntity.status(e.getStatusCode()).body(GenericResponse.eror(e.getReason()));
+        }catch(Exception e){
+            log.info(e.getMessage());
+            return ResponseEntity.internalServerError().body(GenericResponse.eror(e.getMessage()));
         }
     }
 }

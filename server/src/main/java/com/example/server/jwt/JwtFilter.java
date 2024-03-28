@@ -1,4 +1,4 @@
-package com.example.server.security.jwt;
+package com.example.server.jwt;
 
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.FilterChain;

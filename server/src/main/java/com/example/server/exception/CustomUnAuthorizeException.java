@@ -1,4 +1,4 @@
-package com.example.server.security.exception;
+package com.example.server.exception;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;

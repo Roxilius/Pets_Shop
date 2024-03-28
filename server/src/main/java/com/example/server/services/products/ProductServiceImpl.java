@@ -8,7 +8,6 @@ import javax.sql.rowset.serial.SerialBlob;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
@@ -34,7 +33,7 @@ public class ProductServiceImpl implements ProductService{
     @SuppressWarnings("null")
     @Override
     @Transactional
-    public ProductRequest add(ProductRequest request, MultipartFile productImage) throws IOException, SQLException{
+    public void add(ProductRequest request, MultipartFile productImage) throws IOException, SQLException{
         if (!productImage.getContentType().startsWith("image")) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Unsupported File Type");
         }
@@ -53,13 +52,11 @@ public class ProductServiceImpl implements ProductService{
             product.setStock(product.getStock() + request.getStock());
             productsRepository.save(product);
         }
-        return request;
     }
 
     @SuppressWarnings("null")
     @Override
-    public ResponseEntity<String> delete(String id) {
+    public void delete(String id) {
         productsRepository.deleteById(id);
-        return ResponseEntity.ok("Success");
     }
 }
