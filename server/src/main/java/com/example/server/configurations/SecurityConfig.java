@@ -35,6 +35,7 @@ public class SecurityConfig{
         .accessDeniedHandler(new CustomAccessDeniedException()))
         .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/register",
+                    "/products/**",
                     "/upload/**",
                     "/auth/**",
                     "/v3/api-docs/**",

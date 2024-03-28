@@ -19,7 +19,6 @@ import com.example.server.repositorys.UsersRepository;
 public class UploadImageServiceImpl implements UploadImageService{
     @Autowired
     UsersRepository usersRepository;
-
     @SuppressWarnings("null")
 	@Override
     public void uploadUserImage(String userId, MultipartFile userImage) throws IOException, SQLException {
@@ -31,10 +30,5 @@ public class UploadImageServiceImpl implements UploadImageService{
             user.setImage(new SerialBlob(userImage.getBytes()));
             usersRepository.saveAndFlush(user);
         }
-    }
-
-    @Override
-    public void uploadProductImage(String productId, MultipartFile ProductImage) throws IOException, SQLException {
-        throw new UnsupportedOperationException("Unimplemented method 'uploadProductImage'");
     }
 }

@@ -25,8 +25,7 @@ public class UploadImageController {
     UploadImageService uploadImageService;
     @PostMapping(value="/upload-user-image",
     consumes= MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<Object> uploadUserImage(@RequestParam String User,
-    @RequestParam("UserImage") MultipartFile file){
+    public ResponseEntity<Object> uploadUserImage(@RequestParam String User, @RequestParam("UserImage") MultipartFile file){
         try{
             uploadImageService.uploadUserImage(User, file);
             return ResponseEntity.ok().body(GenericResponse.success(null,"Successfuly Upload Image"));

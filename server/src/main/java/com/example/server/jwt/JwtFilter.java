@@ -15,7 +15,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
-import java.util.ArrayList;
 
 @Component
 public class JwtFilter extends OncePerRequestFilter{
@@ -39,8 +38,10 @@ public class JwtFilter extends OncePerRequestFilter{
             Claims claims = jwtUtil.resolveClaims(request);
             if(claims != null && jwtUtil.validateClaims(claims)){
                 String username = claims.getSubject();
-                Authentication authentication = new UsernamePasswordAuthenticationToken(
-                        username,"",new ArrayList<>());
+                Authentication authentication = 
+                new UsernamePasswordAuthenticationToken(claims, username, null);
+                // new UsernamePasswordAuthenticationToken(username,"",new ArrayList<>());
+                // new UsernamePasswordAuthenticationToken(claims, username);
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             }
         } catch (Exception e) {
