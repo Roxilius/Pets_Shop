@@ -35,7 +35,7 @@ public class UploadImageController {
             return ResponseEntity.status(e.getStatusCode()).body(GenericResponse.eror(e.getReason()));
         }catch(Exception e){
             log.info(e.getMessage());
-            return ResponseEntity.internalServerError().body(GenericResponse.eror(MassageConstant.ERROR_500));
+            return ResponseEntity.internalServerError().body(GenericResponse.eror("Image Upload Failed"));
         }
     }
 }

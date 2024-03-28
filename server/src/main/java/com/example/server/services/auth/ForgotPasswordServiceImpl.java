@@ -31,7 +31,6 @@ public class ForgotPasswordServiceImpl implements ForgotPasswordService{
     ForgotPasswordRepository forgotPasswordRepository;
     @Autowired
     PasswordEncoder passwordEncoder;
-
     @SuppressWarnings("null")
     @Override
     public void verifyEmail(@PathVariable String email){
@@ -57,7 +56,6 @@ public class ForgotPasswordServiceImpl implements ForgotPasswordService{
         String text = "OTP Code For Forgot Your Password : " + otp;
         emailService.sendSimpleMessage(to, subject, text);
     }
-
     @SuppressWarnings("null")
     @Override
     public ResponseEntity<String> verifyOtp(@PathVariable Integer otp, @PathVariable String email){
@@ -74,7 +72,6 @@ public class ForgotPasswordServiceImpl implements ForgotPasswordService{
         forgotPasswordRepository.deleteById(fp.getId());
         return ResponseEntity.ok("OTP Verified!!");
     }
-
     @Override
     public ResponseEntity<String> changePasswordHandler(@RequestBody ChangePasswordRequest request, @PathVariable String email){
         if (!Objects.equals(request.getPassword(), request.getRePassword())) {
