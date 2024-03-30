@@ -3,6 +3,7 @@ package com.example.server.controllers.user;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -24,6 +25,7 @@ import lombok.extern.slf4j.Slf4j;
 @RestController
 @Tag(name = "user")
 @Slf4j
+@CrossOrigin(origins = "http://localhost:5173/")
 public class UsersController {
     @Autowired
     UserService userService;
@@ -68,7 +70,7 @@ public class UsersController {
         }
     }
 
-       @PostMapping("auth/verify-email/{email}")
+    @PostMapping("auth/verify-email/{email}")
     public ResponseEntity<Object> verifyEmail(@PathVariable String email){
         try {
             userService.verifyEmail(email);

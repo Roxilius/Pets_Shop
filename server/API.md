@@ -14,7 +14,6 @@ Request Body :
   "password": ""
 }
 ```
-
 Response Body(success) :
 ```json
 {
@@ -29,7 +28,6 @@ Response Body(success) :
   }
 }
 ```
-
 Response Body(Failed) :
 ```json
 {

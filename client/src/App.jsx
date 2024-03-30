@@ -10,31 +10,35 @@ import {
 } from "@/components/ui/input-otp";
 import { Button } from "./components/ui/button";
 import { useState } from "react";
+import { data } from "autoprefixer";
+import { useEffect } from "react";
+import axios from "axios";
+import { any } from "zod";
 
 
 function App() {
-  const username = 'username';
-  const password = '3ee85351-a96d-40a6-8fdb-11724ff001af';
-  const basicAuthCredentials = btoa(`${username}:${password}`);
-  const authHeader = {
-    headers: {
-      Authorization: `Basic ${basicAuthCredentials}`
-    }
-  };
-
   const handleClick = (e)=>{
     e.preventDefault()
-    sessionStorage.setItem("email", "asd");
+    sessionStorage.setItem("email", "asdqwe");
     const email = sessionStorage.getItem("email");
-    fetch(`http://localhost:8080/auth/verify-email/${email}`, {
+    const data = {
+      email: email,
+      password: "asd"
+    }
+    fetch(`http://localhost:8080/auth/login`, {
       method: 'POST',
-      headers:{
-        'Authorization': basicAuthCredentials
-      }
-    }).then((res) =>{
-      console.log("berhasil");
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(data)
+    }).then(Response => Response.json()).then(res =>{
+      console.log(res);
     })
   }
+
+  useEffect(() =>{
+    handleClick
+  },[]);
   
   return (
     <>

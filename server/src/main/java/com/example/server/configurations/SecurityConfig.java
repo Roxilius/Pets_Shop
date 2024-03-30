@@ -20,13 +20,16 @@ import com.example.server.jwt.JwtFilter;
 public class SecurityConfig{
     @Autowired
     JwtFilter jwtFilter;
+
     @Bean
     PasswordEncoder getPasswordEncoder(){
         return new BCryptPasswordEncoder();
     }
+    @SuppressWarnings("removal")
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
+        .cors().and()
         .csrf(csrf -> csrf.disable())
         .sessionManagement(session ->
         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
@@ -45,4 +48,5 @@ public class SecurityConfig{
         .addFilterAfter(jwtFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
+
 }

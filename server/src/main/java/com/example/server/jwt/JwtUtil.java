@@ -26,7 +26,7 @@ public class JwtUtil {
     }
     public String generateToken(Users user) {
         Claims claims = Jwts.claims().setSubject(user.getEmail());
-        claims.put("username",user.getEmail());
+        claims.put("email",user.getEmail());
         claims.put("role",user.getRoles().getRoleName());
 
         Date tokenCreateTime = new Date();
