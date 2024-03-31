@@ -38,12 +38,13 @@ public class SecurityConfig{
         .accessDeniedHandler(new CustomAccessDeniedException()))
         .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/register",
-                    "/products/**",
+                    "/products/get-all-products",
                     "/auth/**",
                     "/v3/api-docs/**",
                     "/swagger-ui/**"
                 )
                 .permitAll()
+                .requestMatchers("/products/add-product").hasAuthority("ADMIN")
                 .anyRequest().authenticated())
         .addFilterAfter(jwtFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();

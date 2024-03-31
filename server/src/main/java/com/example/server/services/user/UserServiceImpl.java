@@ -58,25 +58,15 @@ public class UserServiceImpl implements UserService {
             newUser.setPhoneNumber(request.getPhoneNumber());
             newUser.setEmail(request.getEmail());
             newUser.setPassword(passwordEncoder.encode(request.getPassword()));
-            Roles userRoles = rolesRepository.findByRoleName(RolesConstant.USER_ROLE);
+            Roles userRoles = rolesRepository.findByRoleName(RolesConstant.ADMIN_ROLE);
             newUser.setRoles(userRoles);
             newUser.setRegisterDate(LocalDate.now());
 
             usersRepository.save(newUser);
-            sendEmail(request.getEmail(), request.getFullName().toUpperCase());
+            emailSevice.emailRegistration(request.getEmail(), request.getFullName().toUpperCase());
             return request;
         }
         throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Email Sudah Terdaftar");
-    }
-    // overloading
-    private void sendEmail(String to, String name) {
-        String subject = "Registration New User";
-        String text = 
-            "Selamat Datang, " + name + "\n" +
-            "Kepada Yth " + name + ", Terimakasih sudah mendaftar di Website kami. \n" + 
-            "Email ini akan bermanfaat untuk membantu Anda menggunakan akun diwebsite kami dengan mudah. \n" +
-            "Silahkan login melalui link berikut: (link)";
-        emailSevice.sendSimpleMessage(to, subject, text);
     }
 
     @SuppressWarnings("null")
@@ -123,14 +113,8 @@ public class UserServiceImpl implements UserService {
         if (existFp != null ) {
             forgotPasswordRepository.delete(existFp);
         }
-        sendEmail(email, otp);
+        // sendEmail(email, otp);
         forgotPasswordRepository.save(fp);
-    }
-    // overloading
-    private void sendEmail(String to, int otp) {
-        String subject = "Verify Forgot Password";
-        String text = "OTP Code For Forgot Your Password : " + otp;
-        emailSevice.sendSimpleMessage(to, subject, text);
     }
     @SuppressWarnings("null")
     @Override

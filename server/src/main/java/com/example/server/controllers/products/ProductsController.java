@@ -16,6 +16,7 @@ import com.example.server.data_transfer_object.GenericResponse;
 import com.example.server.data_transfer_object.products.ProductRequest;
 import com.example.server.services.products.ProductService;
 
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 
@@ -39,6 +40,7 @@ public class ProductsController {
 
     @PostMapping(value="/add-product",
     consumes= MediaType.MULTIPART_FORM_DATA_VALUE)
+    @SecurityRequirement(name = "Bearer Authentication")
     public ResponseEntity<Object> addProduct(ProductRequest request ,@RequestParam("Product Image") MultipartFile file){
         try{
             productService.add(request,file);
@@ -52,6 +54,7 @@ public class ProductsController {
     }
     
     @DeleteMapping("/delete-product/{id}")
+    @SecurityRequirement(name = "Bearer Authentication")
     public ResponseEntity<Object> deleteProduct(@RequestParam String id){
         try{
             productService.delete(id);
