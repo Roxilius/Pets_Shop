@@ -19,6 +19,7 @@ import com.example.server.data_transfer_object.user.LoginResponse;
 import com.example.server.data_transfer_object.user.Register;
 import com.example.server.services.user.UserService;
 
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 
@@ -43,6 +44,7 @@ public class UsersController {
 
     @PostMapping(value="/upload-user-image",
     consumes= MediaType.MULTIPART_FORM_DATA_VALUE)
+    @SecurityRequirement(name = "Bearer Authentication")
     public ResponseEntity<Object> uploadUserImage(@RequestParam String User, @RequestParam("UserImage") MultipartFile file){
         try{
             userService.uploadUserImage(User, file);

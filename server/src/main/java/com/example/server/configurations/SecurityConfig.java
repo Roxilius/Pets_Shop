@@ -11,42 +11,44 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import com.example.server.constants.RolesConstant;
 import com.example.server.exception.CustomAccessDeniedException;
 import com.example.server.exception.CustomUnAuthorizeException;
 import com.example.server.jwt.JwtFilter;
 
 @Configuration
 @EnableWebSecurity
-public class SecurityConfig{
+public class SecurityConfig {
     @Autowired
     JwtFilter jwtFilter;
 
     @Bean
-    PasswordEncoder getPasswordEncoder(){
+    PasswordEncoder getPasswordEncoder() {
         return new BCryptPasswordEncoder();
     }
+
     @SuppressWarnings("removal")
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-        .cors().and()
-        .csrf(csrf -> csrf.disable())
-        .sessionManagement(session ->
-        session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-        .exceptionHandling(ex -> ex
-        .authenticationEntryPoint(new CustomUnAuthorizeException())
-        .accessDeniedHandler(new CustomAccessDeniedException()))
-        .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/register",
-                    "/products/get-all-products",
-                    "/auth/**",
-                    "/v3/api-docs/**",
-                    "/swagger-ui/**"
-                )
-                .permitAll()
-                .requestMatchers("/products/add-product").hasAuthority("ADMIN")
-                .anyRequest().authenticated())
-        .addFilterAfter(jwtFilter, UsernamePasswordAuthenticationFilter.class);
+                .cors().and()
+                .csrf(csrf -> csrf.disable())
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .exceptionHandling(ex -> ex
+                        .authenticationEntryPoint(new CustomUnAuthorizeException())
+                        .accessDeniedHandler(new CustomAccessDeniedException()))
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/register",
+                                "/products/get-all-products",
+                                "/products/get-product/{id}",
+                                "/auth/**",
+                                "/v3/api-docs/**",
+                                "/swagger-ui/**")
+                        .permitAll()
+                        .requestMatchers("/upload-user-image").hasAuthority(RolesConstant.USER_ROLE)
+                        .requestMatchers("/products/**").hasAuthority(RolesConstant.ADMIN_ROLE)
+                        .anyRequest().authenticated())
+                .addFilterAfter(jwtFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
 

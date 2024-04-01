@@ -1,11 +1,24 @@
 package com.example.server.services.products;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Optional;
 
 import javax.sql.rowset.serial.SerialBlob;
 
+import org.apache.poi.ss.usermodel.BorderStyle;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.HorizontalAlignment;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.VerticalAlignment;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.util.CellRangeAddress;
+import org.apache.poi.xssf.usermodel.XSSFFont;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -27,7 +40,17 @@ public class ProductServiceImpl implements ProductService{
 
     @Override
     public List<Products> getAllProducts() {
-        return productsRepository.findAll();
+        try {
+            return productsRepository.findAll();
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Product Not Found");
+        }
+    }
+
+    @SuppressWarnings("null")
+    @Override
+    public Optional<Products> getProduct(String id) {
+        return productsRepository.findById(id);
     }
 
     @SuppressWarnings("null")
@@ -53,10 +76,148 @@ public class ProductServiceImpl implements ProductService{
             productsRepository.save(product);
         }
     }
+    @SuppressWarnings("null")
+    @Override
+    @Transactional
+    public void edit(ProductRequest request, MultipartFile productImage, String id) throws IOException, SQLException{
+        if (!productImage.getContentType().startsWith("image")) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Unsupported File Type");
+        }
+        Products product = productsRepository.findById(id).orElse(null);
+        product.setName(request.getName());
+        product.setCategory(request.getCategory());
+        product.setDescription(request.getCategory());
+        product.setPrice(request.getPrice());
+        product.setStock(request.getStock());
+        product.setImage(new SerialBlob(productImage.getBytes()));
+        productsRepository.saveAndFlush(product);
+    }
 
     @SuppressWarnings("null")
     @Override
     public void delete(String id) {
         productsRepository.deleteById(id);
+    }
+
+    @Override
+    public byte[] generateReport() throws IOException {
+        Workbook workbook = new XSSFWorkbook();
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        Sheet sheet = workbook.createSheet();
+
+        CellStyle headerCellStyle = createCellStyle(workbook, true, false, false);
+        CellStyle titleCellStyle = createCellStyle(workbook, false, true, false);
+        CellStyle tableCellStyle = createCellStyle(workbook, false, false, true);
+
+        generateTitle(sheet, titleCellStyle);
+        generateHeader(sheet, headerCellStyle);
+
+        List<Products> products = productsRepository.findAll();
+        if (products.isEmpty()) {
+            generateEmptyData(sheet, tableCellStyle);
+        } else {
+            int currentRowIndex = 3;
+            int rowNum = 1;
+            for (Products product : products) {
+                Row row = sheet.createRow(currentRowIndex);
+                generateTabelData(row, product, tableCellStyle, rowNum);
+                currentRowIndex++;
+                rowNum++;
+            }
+        }
+
+        for (int i = 0; i < 7; i++) {
+            sheet.autoSizeColumn(i);
+        }
+
+        workbook.write(byteArrayOutputStream);
+        workbook.close();
+
+        return byteArrayOutputStream.toByteArray();
+    }
+
+    private void generateTitle(Sheet sheet, CellStyle cellStyle) {
+        Row titleRow = sheet.createRow(0);
+        Cell titleCell = titleRow.createCell(0);
+        titleCell.setCellValue("Laporan Data Products");
+        titleCell.setCellStyle(cellStyle);
+        sheet.addMergedRegion(new CellRangeAddress(0, 0, 0, 7));
+    }
+
+    private void generateHeader(Sheet sheet, CellStyle cellStyle) {
+        Row headerRow = sheet.createRow(2);
+        int currentCellIndex = 0;
+        headerRow.createCell(currentCellIndex).setCellValue("No");
+        headerRow.createCell(++currentCellIndex).setCellValue("Nama Produt");
+        headerRow.createCell(++currentCellIndex).setCellValue("Kategori");
+        headerRow.createCell(++currentCellIndex).setCellValue("Harga");
+        headerRow.createCell(++currentCellIndex).setCellValue("Stock");
+        headerRow.createCell(++currentCellIndex).setCellValue("");
+
+        for (int i = 0; i < currentCellIndex; i++) {
+            headerRow.getCell(i).setCellStyle(cellStyle);
+        }
+    }
+
+    private CellStyle createCellStyle(Workbook workbook,
+            boolean isHeader, boolean isTitle, boolean isTable) {
+        CellStyle cellStyle = workbook.createCellStyle();
+        XSSFFont font = ((XSSFWorkbook) workbook).createFont();
+        font.setFontName("Arial");
+        if (isHeader) {
+            font.setFontHeightInPoints((short) 15);
+            font.setBold(true);
+            cellStyle.setAlignment(HorizontalAlignment.CENTER);
+            cellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+        }
+        if (isTitle) {
+            font.setFontHeightInPoints((short) 10);
+            font.setBold(true);
+            cellStyle.setAlignment(HorizontalAlignment.CENTER);
+            cellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+        }
+        if (isTable) {
+            font.setFontHeightInPoints((short) 10);
+            cellStyle.setAlignment(HorizontalAlignment.LEFT);
+            cellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+            cellStyle.setBorderTop(BorderStyle.DASHED);
+            cellStyle.setBorderBottom(BorderStyle.DASHED);
+            cellStyle.setBorderLeft(BorderStyle.DASHED);
+            cellStyle.setBorderRight(BorderStyle.DASHED);
+        }
+        cellStyle.setFont(font);
+        return cellStyle;
+    }
+
+    private void generateEmptyData(Sheet sheet, CellStyle cellStyle) {
+        Row emptyRow = sheet.createRow(3);
+        emptyRow.createCell(0).setCellValue("No Data");
+        sheet.addMergedRegion(new CellRangeAddress(3, 3, 0, 7));
+        emptyRow.getCell(0).setCellStyle(cellStyle);
+    }
+
+    private void generateTabelData(Row row, Products product, CellStyle cellStyle,
+        int rowNum) {
+        int currentCellIndex = 0;
+
+        Cell numberRow = row.createCell(currentCellIndex);
+        numberRow.setCellValue(rowNum);
+        numberRow.setCellStyle(cellStyle);
+
+        Cell namaRow = row.createCell(++currentCellIndex);
+        namaRow.setCellValue(product.getName());
+        namaRow.setCellStyle(cellStyle);
+
+        Cell kategoriRow = row.createCell(++currentCellIndex);
+        kategoriRow.setCellValue(product.getCategory());
+        kategoriRow.setCellStyle(cellStyle);
+
+        Cell hargaRow = row.createCell(++currentCellIndex);
+        hargaRow.setCellValue(product.getPrice());
+        hargaRow.setCellStyle(cellStyle);
+
+        Cell stockRow = row.createCell(++currentCellIndex);
+        stockRow.setCellValue(product.getStock());
+        stockRow.setCellStyle(cellStyle);
     }
 }

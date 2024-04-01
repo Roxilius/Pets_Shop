@@ -58,7 +58,7 @@ public class UserServiceImpl implements UserService {
             newUser.setPhoneNumber(request.getPhoneNumber());
             newUser.setEmail(request.getEmail());
             newUser.setPassword(passwordEncoder.encode(request.getPassword()));
-            Roles userRoles = rolesRepository.findByRoleName(RolesConstant.ADMIN_ROLE);
+            Roles userRoles = rolesRepository.findByRoleName(RolesConstant.USER_ROLE);
             newUser.setRoles(userRoles);
             newUser.setRegisterDate(LocalDate.now());
 
