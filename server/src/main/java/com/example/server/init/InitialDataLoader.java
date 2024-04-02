@@ -35,7 +35,7 @@ public class InitialDataLoader implements ApplicationRunner{
         }
 
         if(usersRepository.findAll().isEmpty()){
-            Roles adminRoles = rolesRepository.findByRoleName(RolesConstant.USER_ROLE);
+            Roles adminRoles = rolesRepository.findByRoleName(RolesConstant.ADMIN_ROLE);
             Users user = Users.builder()
             .email("petshop")
             .password(passwordEncoder.encode("petshop"))
