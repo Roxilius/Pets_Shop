@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 
 import com.example.server.constants.RolesConstant;
 import com.example.server.models.Roles;
+import com.example.server.models.Users;
 // import com.example.server.models.Users;
 import com.example.server.repositorys.RolesRepository;
 import com.example.server.repositorys.UsersRepository;
@@ -26,23 +27,21 @@ public class InitialDataLoader implements ApplicationRunner{
     @SuppressWarnings("null")
     @Override
     public void run(ApplicationArguments args) throws Exception {
-        List<Roles> roles = rolesRepository.findAll();
 
-        if(roles.isEmpty()){
+        if(rolesRepository.findAll().isEmpty()){
             Roles admin = new Roles(null, RolesConstant.ADMIN_ROLE, "Role as Admin in Application");
             Roles user = new Roles(null, RolesConstant.USER_ROLE, "Role as User in Application");
             rolesRepository.saveAll(List.of(admin, user));
         }
 
-        // Roles adminRoles = rolesRepository.findByRoleName(RolesConstant.USER_ROLE);
-        // Users user = Users.builder()
-        // .email("fajrikhairan08@gmail.com")
-        // .fullName("fajri khairan")
-        // .gender("laki - laki")
-        // .phoneNumber("085161501710")
-        // .password(passwordEncoder.encode("fajri"))
-        // .roles(adminRoles)
-        // .build();
-        // usersRepository.saveAndFlush(user);
+        if(usersRepository.findAll().isEmpty()){
+            Roles adminRoles = rolesRepository.findByRoleName(RolesConstant.USER_ROLE);
+            Users user = Users.builder()
+            .email("petshop")
+            .password(passwordEncoder.encode("petshop"))
+            .roles(adminRoles)
+            .build();
+            usersRepository.saveAndFlush(user);
+        }
     }
 }

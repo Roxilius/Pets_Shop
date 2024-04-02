@@ -61,7 +61,6 @@ public class UserServiceImpl implements UserService {
             Roles userRoles = rolesRepository.findByRoleName(RolesConstant.USER_ROLE);
             newUser.setRoles(userRoles);
             newUser.setRegisterDate(LocalDate.now());
-
             usersRepository.save(newUser);
             emailSevice.emailRegistration(request.getEmail(), request.getFullName().toUpperCase());
             return request;
