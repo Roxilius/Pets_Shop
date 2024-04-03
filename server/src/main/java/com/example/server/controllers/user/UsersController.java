@@ -26,7 +26,7 @@ import lombok.extern.slf4j.Slf4j;
 @RestController
 @Tag(name = "user")
 @Slf4j
-@CrossOrigin()
+@CrossOrigin(origins = "http://localhost:5173/")
 public class UsersController {
     @Autowired
     UserService userService;
@@ -38,7 +38,7 @@ public class UsersController {
         }catch(ResponseStatusException e){
             return ResponseEntity.status(e.getStatusCode()).body(GenericResponse.eror(e.getReason()));
         }catch(Exception e){
-            return ResponseEntity.internalServerError().body(GenericResponse.eror(e.getMessage()));
+            return ResponseEntity.internalServerError().body(GenericResponse.eror("Internal Server Error!"));
         }
     }
 
@@ -68,7 +68,7 @@ public class UsersController {
             return ResponseEntity.status(e.getStatusCode()).body(GenericResponse.eror(e.getReason()));
         }catch(Exception e){
             log.info(e.getMessage());
-            return ResponseEntity.internalServerError().body(GenericResponse.eror(e.getMessage()));
+            return ResponseEntity.internalServerError().body(GenericResponse.eror("Internal Server Error!"));
         }
     }
 
@@ -82,7 +82,7 @@ public class UsersController {
             return ResponseEntity.status(e.getStatusCode()).body(GenericResponse.eror(e.getReason()));
         }catch(Exception e){
             log.info(e.getMessage());
-            return ResponseEntity.internalServerError().body(GenericResponse.eror(e.getMessage()));
+            return ResponseEntity.internalServerError().body(GenericResponse.eror("Internal Server Error!"));
         }
     }
     
@@ -95,7 +95,7 @@ public class UsersController {
             log.info(e.getMessage());
             return ResponseEntity.status(e.getStatusCode()).body(GenericResponse.eror(e.getReason()));
         }catch(Exception e){
-            return ResponseEntity.internalServerError().body(GenericResponse.eror(e.getMessage()));
+            return ResponseEntity.internalServerError().body(GenericResponse.eror("Internal Server Error!"));
         }
     }
 
@@ -109,7 +109,7 @@ public class UsersController {
             return ResponseEntity.status(e.getStatusCode()).body(GenericResponse.eror(e.getReason()));
         }catch(Exception e){
             log.info(e.getMessage());
-            return ResponseEntity.internalServerError().body(GenericResponse.eror(e.getMessage()));
+            return ResponseEntity.internalServerError().body(GenericResponse.eror("Internal Server Error!"));
         }
     }
 }

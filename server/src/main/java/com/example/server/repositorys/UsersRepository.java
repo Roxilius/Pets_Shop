@@ -16,6 +16,7 @@ import jakarta.transaction.Transactional;
 
 public interface UsersRepository extends JpaRepository<Users, String>{
     Optional<Users> findByEmail(String email);
+    Users findUsersByEmail(String email);
 
     @Transactional
     @Modifying

@@ -50,7 +50,7 @@ public class JwtFilter extends OncePerRequestFilter {
                 String username = claims.getSubject();
 
                 Authentication authentication = new UsernamePasswordAuthenticationToken(
-                        username, "", Collections.singleton(new SimpleGrantedAuthority(claims.get("role").toString())));
+                username, "", Collections.singleton(new SimpleGrantedAuthority(claims.get("role").toString())));
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             }
         } catch (Exception e) {
@@ -64,7 +64,7 @@ public class JwtFilter extends OncePerRequestFilter {
     @SuppressWarnings("unused")
     private Collection<? extends GrantedAuthority> getRoles() {
         return rolesRepository.findAll().stream().findAny()
-                .map(role -> Collections.singleton(new SimpleGrantedAuthority(role.getRoleName()))).get();
+        .map(role -> Collections.singleton(new SimpleGrantedAuthority(role.getRoleName()))).get();
     }
 
 }

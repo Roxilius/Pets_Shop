@@ -16,7 +16,9 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.example.server.data_transfer_object.GenericResponse;
+import com.example.server.data_transfer_object.PageResponse;
 import com.example.server.data_transfer_object.products.ProductRequest;
+import com.example.server.data_transfer_object.products.ProductResponse;
 import com.example.server.services.products.ProductService;
 
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -28,15 +30,17 @@ import lombok.extern.slf4j.Slf4j;
 @RestController
 @Tag(name = "products")
 @Slf4j
-@CrossOrigin()
+@CrossOrigin(origins = "http://localhost:5173/")
 public class ProductsController {
     @Autowired
     ProductService productService;
     
     @GetMapping("/get-all-products")
-    public ResponseEntity<Object> getAll(){
+    public ResponseEntity<Object> getAll( @RequestParam(required = false) String name, @RequestParam(required = false) String category,
+    @RequestParam int page, @RequestParam int size, @RequestParam(required = false) String sortBy, @RequestParam(required = false) String sortOrder){
         try{
-            return ResponseEntity.ok().body(GenericResponse.success(productService.getAllProducts(),"Success Get All Product"));
+            PageResponse<ProductResponse> response = productService.getAllProducts(name, category, page, size, sortBy, sortOrder);
+            return ResponseEntity.ok().body(GenericResponse.success(response,"Success Get All Product"));
         } catch(Exception e){
             log.info(e.getMessage());
             return ResponseEntity.internalServerError().body(GenericResponse.eror(e.getMessage()));
@@ -49,7 +53,7 @@ public class ProductsController {
             return ResponseEntity.ok().body(GenericResponse.success(productService.getProduct(id),"Success Get Product"));
         } catch(Exception e){
             log.info(e.getMessage());
-            return ResponseEntity.internalServerError().body(GenericResponse.eror(e.getMessage()));
+            return ResponseEntity.internalServerError().body(GenericResponse.eror("Internal Server Error!"));
         }
     }
 
@@ -64,7 +68,7 @@ public class ProductsController {
             log.info(e.getMessage());
             return ResponseEntity.status(e.getStatusCode()).body(GenericResponse.eror(e.getReason()));
         }catch(Exception e){
-            return ResponseEntity.internalServerError().body(GenericResponse.eror(e.getMessage()));
+            return ResponseEntity.internalServerError().body(GenericResponse.eror("Internal Server Error!"));
         }
     }
 
@@ -79,7 +83,7 @@ public class ProductsController {
             log.info(e.getMessage());
             return ResponseEntity.status(e.getStatusCode()).body(GenericResponse.eror(e.getReason()));
         }catch(Exception e){
-            return ResponseEntity.internalServerError().body(GenericResponse.eror(e.getMessage()));
+            return ResponseEntity.internalServerError().body(GenericResponse.eror("Internal Server Error!"));
         }
     }
     
@@ -89,9 +93,13 @@ public class ProductsController {
         try{
             productService.delete(id);
             return ResponseEntity.ok().body(GenericResponse.success(null,"Success Delete Product"));
+        }catch (ResponseStatusException e) {
+            log.info(e.getMessage());
+            return ResponseEntity.status(e.getStatusCode()).body(GenericResponse.eror(e.getReason()));
+    
         } catch(Exception e){
             log.info(e.getMessage());
-            return ResponseEntity.badRequest().body(e.getMessage());
+            return ResponseEntity.internalServerError().body(GenericResponse.eror("Internal Server Error!"));
         }
     }
 
@@ -103,7 +111,7 @@ public class ProductsController {
             return ResponseEntity.ok(productService.generateReport());
         } catch (Exception e) {
             log.info(e.getMessage());
-            return ResponseEntity.badRequest().body(e.getMessage());
+            return ResponseEntity.internalServerError().body(GenericResponse.eror("Internal Server Error!"));
         }
     }
 }

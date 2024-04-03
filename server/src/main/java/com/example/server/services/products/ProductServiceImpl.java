@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.sql.rowset.serial.SerialBlob;
 
@@ -25,8 +26,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
+import com.example.server.data_access_object.ProductDao;
+import com.example.server.data_transfer_object.PageResponse;
 import com.example.server.data_transfer_object.products.ProductRequest;
+import com.example.server.data_transfer_object.products.ProductResponse;
+import com.example.server.models.Category;
 import com.example.server.models.Products;
+import com.example.server.repositorys.CategoryRepository;
 import com.example.server.repositorys.ProductsRepository;
 
 import jakarta.transaction.Transactional;
@@ -34,23 +40,43 @@ import jakarta.transaction.Transactional;
 
 @Service
 public class ProductServiceImpl implements ProductService{
-
+    @Autowired
+    ProductDao productDao;
     @Autowired
     ProductsRepository productsRepository;
-
+    @Autowired
+    CategoryRepository categoryRepository;
     @Override
-    public List<Products> getAllProducts() {
-        try {
-            return productsRepository.findAll();
-        } catch (Exception e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Product Not Found");
-        }
+    public PageResponse<ProductResponse> getAllProducts(String name, String category, int page, int size, String sortBy, String sortOrder) {
+        Category categoryName = categoryRepository.findCategoryByName(category);
+        PageResponse<Products> productPage = productDao.getAll(name, categoryName, page, size, sortBy, sortOrder);
+        List<ProductResponse> productResponse = productPage.getItems().stream()
+        .map(this::toProduct)
+        .collect(Collectors.toList());
+
+        return PageResponse.success(productResponse, productPage.getPage(), productPage.getSize(), productPage.getTotalItem());
+    }
+
+    public ProductResponse toProduct(Products product) {
+        return ProductResponse.builder()
+        .id(product.getId())
+        .name(product.getName())
+        .price(product.getPrice())
+        .stock(product.getStock())
+        .image(product.getImage())
+        .category(product.getCategory().getName())
+        .description(product.getDescription())
+        .build();
     }
 
     @SuppressWarnings("null")
     @Override
     public Optional<Products> getProduct(String id) {
-        return productsRepository.findById(id);
+        try {
+            return productsRepository.findById(id);
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Product Not Found");
+        }
     }
 
     @SuppressWarnings("null")
@@ -64,7 +90,12 @@ public class ProductServiceImpl implements ProductService{
         if (product == null) {
             Products newProduct = new Products();
             newProduct.setName(request.getName());
-            newProduct.setCategory(request.getCategory());
+            Category category = categoryRepository.findCategoryByName(request.getCategory());
+            if (category != null) {
+                newProduct.setCategory(category);
+            } else{
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Category Tidak Ada");
+            }
             newProduct.setDescription(request.getCategory());
             newProduct.setPrice(request.getPrice());
             newProduct.setStock(request.getStock());
@@ -72,6 +103,7 @@ public class ProductServiceImpl implements ProductService{
             productsRepository.save(newProduct);
         } else{
             product.setDescription(request.getCategory());
+            product.setCategory(categoryRepository.findCategoryByName(request.getCategory()));
             product.setStock(product.getStock() + request.getStock());
             productsRepository.save(product);
         }
@@ -85,7 +117,12 @@ public class ProductServiceImpl implements ProductService{
         }
         Products product = productsRepository.findById(id).orElse(null);
         product.setName(request.getName());
-        product.setCategory(request.getCategory());
+        Category category = categoryRepository.findCategoryByName(request.getCategory());
+        if (category != null) {
+            product.setCategory(category);
+        } else{
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Category Tidak Ada");
+        }
         product.setDescription(request.getCategory());
         product.setPrice(request.getPrice());
         product.setStock(request.getStock());
@@ -159,8 +196,7 @@ public class ProductServiceImpl implements ProductService{
         }
     }
 
-    private CellStyle createCellStyle(Workbook workbook,
-            boolean isHeader, boolean isTitle, boolean isTable) {
+    private CellStyle createCellStyle(Workbook workbook, boolean isHeader, boolean isTitle, boolean isTable) {
         CellStyle cellStyle = workbook.createCellStyle();
         XSSFFont font = ((XSSFWorkbook) workbook).createFont();
         font.setFontName("Arial");
@@ -209,7 +245,7 @@ public class ProductServiceImpl implements ProductService{
         namaRow.setCellStyle(cellStyle);
 
         Cell kategoriRow = row.createCell(++currentCellIndex);
-        kategoriRow.setCellValue(product.getCategory());
+        kategoriRow.setCellValue(product.getCategory().getName());
         kategoriRow.setCellStyle(cellStyle);
 
         Cell hargaRow = row.createCell(++currentCellIndex);

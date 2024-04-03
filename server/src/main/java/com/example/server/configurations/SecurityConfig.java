@@ -45,8 +45,12 @@ public class SecurityConfig {
                                 "/v3/api-docs/**",
                                 "/swagger-ui/**")
                         .permitAll()
-                        .requestMatchers("/upload-user-image").hasAuthority(RolesConstant.USER_ROLE)
-                        .requestMatchers("/products/**").hasAuthority(RolesConstant.ADMIN_ROLE)
+                        .requestMatchers("/upload-user-image",
+                                "/cart"
+                        ).hasAuthority(RolesConstant.USER_ROLE)
+                        .requestMatchers("/products/**",
+                                "/category/**"
+                        ).hasAuthority(RolesConstant.ADMIN_ROLE)
                         .anyRequest().authenticated())
                 .addFilterAfter(jwtFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
