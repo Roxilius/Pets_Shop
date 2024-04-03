@@ -37,9 +37,9 @@ public class ProductsController {
     
     @GetMapping("/get-all-products")
     public ResponseEntity<Object> getAll( @RequestParam(required = false) String name, @RequestParam(required = false) String category,
-    @RequestParam int page, @RequestParam int size, @RequestParam(required = false) String sortBy, @RequestParam(required = false) String sortOrder){
+    @RequestParam int page, @RequestParam(required = false) String sortBy, @RequestParam(required = false) String sortOrder){
         try{
-            PageResponse<ProductResponse> response = productService.getAllProducts(name, category, page, size, sortBy, sortOrder);
+            PageResponse<ProductResponse> response = productService.getAllProducts(name, category, page, 10, sortBy, sortOrder);
             return ResponseEntity.ok().body(GenericResponse.success(response,"Success Get All Product"));
         } catch(Exception e){
             log.info(e.getMessage());

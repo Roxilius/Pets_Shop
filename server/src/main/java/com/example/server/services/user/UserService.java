@@ -14,7 +14,7 @@ import com.example.server.data_transfer_object.user.Register;
 
 public interface UserService {
     Register register(Register request);
-    void uploadUserImage(String UserId,MultipartFile userImage) throws IOException, SQLException;
+    void uploadUserImage(MultipartFile userImage) throws IOException, SQLException;
     LoginResponse login(LoginRequest request);
 
     void verifyEmail(@PathVariable String email);

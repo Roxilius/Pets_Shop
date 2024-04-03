@@ -45,9 +45,9 @@ public class UsersController {
     @PostMapping(value="/upload-user-image",
     consumes= MediaType.MULTIPART_FORM_DATA_VALUE)
     @SecurityRequirement(name = "Bearer Authentication")
-    public ResponseEntity<Object> uploadUserImage(@RequestParam String User, @RequestParam("UserImage") MultipartFile file){
+    public ResponseEntity<Object> uploadUserImage(@RequestParam("UserImage") MultipartFile file){
         try{
-            userService.uploadUserImage(User, file);
+            userService.uploadUserImage(file);
             return ResponseEntity.ok().body(GenericResponse.success(null,"Successfuly Upload Image"));
         }catch(ResponseStatusException e){
             log.info(e.getMessage());

@@ -12,6 +12,8 @@ import javax.sql.rowset.serial.SerialBlob;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -70,15 +72,14 @@ public class UserServiceImpl implements UserService {
 
     @SuppressWarnings("null")
 	@Override
-    public void uploadUserImage(String userId, MultipartFile userImage) throws IOException, SQLException {
+    public void uploadUserImage(MultipartFile userImage) throws IOException, SQLException {
         if (!userImage.getContentType().startsWith("image")) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Unsupported File Type");
         }
-        Users user = usersRepository.findById(userId).orElse(null);
-        if (user != null) {
-            user.setImage(new SerialBlob(userImage.getBytes()));
-            usersRepository.saveAndFlush(user);
-        }
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        Users user = usersRepository.findUsersByEmail(auth.getName());
+        user.setImage(new SerialBlob(userImage.getBytes()));
+        usersRepository.save(user);
     }
     @Override
     public LoginResponse login(LoginRequest request) {
