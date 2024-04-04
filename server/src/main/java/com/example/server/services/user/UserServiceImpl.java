@@ -96,7 +96,6 @@ public class UserServiceImpl implements UserService {
         }
         throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Invalid Username or Password");
     }
-    @SuppressWarnings("null")
     @Override
     public void verifyEmail(String email){
         Users user = usersRepository.findByEmail(email)
@@ -116,7 +115,6 @@ public class UserServiceImpl implements UserService {
         // sendEmail(email, otp);
         forgotPasswordRepository.save(fp);
     }
-    @SuppressWarnings("null")
     @Override
     public void verifyOtp(Integer otp, String email){
         Users user = usersRepository.findByEmail(email)

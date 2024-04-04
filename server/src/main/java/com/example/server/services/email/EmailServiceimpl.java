@@ -35,7 +35,6 @@ public class EmailServiceImpl implements EmailService{
         }
     }
 
-    @SuppressWarnings("null")
     @Override
     public void emailRegistration(String to, String name) {
         try {

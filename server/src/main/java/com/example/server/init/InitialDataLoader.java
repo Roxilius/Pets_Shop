@@ -9,8 +9,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import com.example.server.constants.RolesConstant;
+import com.example.server.models.Category;
 import com.example.server.models.Roles;
 import com.example.server.models.Users;
+import com.example.server.repositorys.CategoryRepository;
 // import com.example.server.models.Users;
 import com.example.server.repositorys.RolesRepository;
 import com.example.server.repositorys.UsersRepository;
@@ -23,6 +25,8 @@ public class InitialDataLoader implements ApplicationRunner{
     UsersRepository usersRepository;
     @Autowired
     PasswordEncoder passwordEncoder;
+    @Autowired
+    CategoryRepository categoryRepository;
 
     @SuppressWarnings("null")
     @Override
@@ -42,6 +46,20 @@ public class InitialDataLoader implements ApplicationRunner{
             .roles(adminRoles)
             .build();
             usersRepository.saveAndFlush(user);
+        }
+
+        if (categoryRepository.findAll().isEmpty()) {
+            Category category = new Category();
+            category.setName("Makanan");
+            categoryRepository.save(category);
+
+            category = new Category();
+            category.setName("Obat - Obatan");
+            categoryRepository.save(category);
+
+            category = new Category();
+            category.setName("Perlengkapan");
+            categoryRepository.save(category);
         }
     }
 }

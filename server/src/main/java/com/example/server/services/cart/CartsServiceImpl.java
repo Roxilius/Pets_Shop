@@ -84,7 +84,6 @@ public class CartsServiceImpl implements CartsService{
         .build();
     }
 
-    @SuppressWarnings("null")
     @Override
     public void delete(String id) {
         cartsRepository.deleteById(id);        

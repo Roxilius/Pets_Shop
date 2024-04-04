@@ -53,7 +53,6 @@ public class ProductServiceImpl implements ProductService{
         List<ProductResponse> productResponse = productPage.getItems().stream()
         .map(this::toProduct)
         .collect(Collectors.toList());
-
         return PageResponse.success(productResponse, productPage.getPage(), productPage.getSize(), productPage.getTotalItem());
     }
 
@@ -69,7 +68,6 @@ public class ProductServiceImpl implements ProductService{
         .build();
     }
 
-    @SuppressWarnings("null")
     @Override
     public Optional<Products> getProduct(String id) {
         try {
@@ -130,7 +128,6 @@ public class ProductServiceImpl implements ProductService{
         productsRepository.saveAndFlush(product);
     }
 
-    @SuppressWarnings("null")
     @Override
     public void delete(String id) {
         productsRepository.deleteById(id);
