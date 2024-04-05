@@ -1,11 +1,11 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
 import './index.css'
-import { RouterProvider } from 'react-router-dom'
-import { createBrowserRouter } from 'react-router-dom'
-import App from './App'
-import HomeAdmin from './pages/admin/HomeAdmin'
-import Home from './pages/Home'
+import { createBrowserRouter, RouterProvider } from 'react-router-dom'
+import App from './App';
+import Home from './pages';
+import Shop from './pages/Shop';
+import Admin from './pages/Admin';
 
 const routers = createBrowserRouter([
   {
@@ -15,18 +15,22 @@ const routers = createBrowserRouter([
     children: [
       {
         path: "/",
-        element: <Home/>
+        element: <Home />
       },
       {
-        path: "home-admin",
-        element: <HomeAdmin/>
+        path: "/Admin",
+        element: <Admin />
+      },
+      {
+        path: '/shop',
+        element: <Shop/>
       }
     ],
   },
-])
+]);
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
-    <RouterProvider router={routers} />
+    <RouterProvider router={routers}/>
   </React.StrictMode>,
 )

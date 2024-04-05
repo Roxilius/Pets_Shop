@@ -1,5 +1,7 @@
 package com.example.server.services.cart;
 
+import java.io.IOException;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -17,6 +19,7 @@ import com.example.server.models.Users;
 import com.example.server.repositorys.CartsRepository;
 import com.example.server.repositorys.ProductsRepository;
 import com.example.server.repositorys.UsersRepository;
+import com.example.server.services.image.ImageService;
 
 @Service
 public class CartsServiceImpl implements CartsService{
@@ -26,6 +29,8 @@ public class CartsServiceImpl implements CartsService{
     UsersRepository usersRepository;
     @Autowired
     CartsRepository cartsRepository;
+    @Autowired
+    ImageService imageService;
     @Override
     public void add(CartRequest request) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -73,15 +78,20 @@ public class CartsServiceImpl implements CartsService{
     }
 
     private ProductResponse toProductResponse(Products product){
-        return ProductResponse.builder()
-        .id(product.getId())
-        .name(product.getName())
-        .price(product.getPrice())
-        .stock(product.getStock())
-        .image(product.getImage())
-        .description(product.getDescription())
-        .category(product.getCategory().getName())
-        .build();
+        try {
+            return ProductResponse.builder()
+            .id(product.getId())
+            .name(product.getName())
+            .price(product.getPrice())
+            .stock(product.getStock())
+            .image(imageService.convertImage(product.getImage()))
+            .description(product.getDescription())
+            .category(product.getCategory().getName())
+            .build();
+        } catch (IOException | SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     @Override

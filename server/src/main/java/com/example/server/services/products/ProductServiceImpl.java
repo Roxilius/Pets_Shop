@@ -34,6 +34,7 @@ import com.example.server.models.Category;
 import com.example.server.models.Products;
 import com.example.server.repositorys.CategoryRepository;
 import com.example.server.repositorys.ProductsRepository;
+import com.example.server.services.image.ImageService;
 
 import jakarta.transaction.Transactional;
 
@@ -46,6 +47,8 @@ public class ProductServiceImpl implements ProductService{
     ProductsRepository productsRepository;
     @Autowired
     CategoryRepository categoryRepository;
+    @Autowired
+    ImageService imageService;
     @Override
     public PageResponse<ProductResponse> getAllProducts(String name, String category, int page, int size, String sortBy, String sortOrder) {
         Category categoryName = categoryRepository.findCategoryByName(category);
@@ -57,15 +60,20 @@ public class ProductServiceImpl implements ProductService{
     }
 
     public ProductResponse toProduct(Products product) {
-        return ProductResponse.builder()
-        .id(product.getId())
-        .name(product.getName())
-        .price(product.getPrice())
-        .stock(product.getStock())
-        .image(product.getImage())
-        .category(product.getCategory().getName())
-        .description(product.getDescription())
-        .build();
+        try {
+            return ProductResponse.builder()
+            .id(product.getId())
+            .name(product.getName())
+            .price(product.getPrice())
+            .stock(product.getStock())
+            .image(imageService.convertImage(product.getImage()))
+            .category(product.getCategory().getName())
+            .description(product.getDescription())
+            .build();
+        } catch (IOException | SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     @Override
@@ -77,7 +85,6 @@ public class ProductServiceImpl implements ProductService{
         }
     }
 
-    @SuppressWarnings("null")
     @Override
     @Transactional
     public void add(ProductRequest request, MultipartFile productImage) throws IOException, SQLException{
@@ -106,7 +113,6 @@ public class ProductServiceImpl implements ProductService{
             productsRepository.save(product);
         }
     }
-    @SuppressWarnings("null")
     @Override
     @Transactional
     public void edit(ProductRequest request, MultipartFile productImage, String id) throws IOException, SQLException{

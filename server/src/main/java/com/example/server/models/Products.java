@@ -31,7 +31,7 @@ public class Products {
     private String name;
 
     @Column(name = "price")
-    private String price;
+    private Integer price;
 
     @Column(name = "stock")
     private Integer stock;

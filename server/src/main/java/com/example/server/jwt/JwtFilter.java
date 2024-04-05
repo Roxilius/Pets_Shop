@@ -31,7 +31,6 @@ public class JwtFilter extends OncePerRequestFilter {
     @Autowired
     RolesRepository rolesRepository;
 
-    @SuppressWarnings("null")
     @Override
     protected void doFilterInternal(HttpServletRequest request,
             HttpServletResponse response,

@@ -70,7 +70,6 @@ public class UserServiceImpl implements UserService {
         throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Email Sudah Terdaftar");
     }
 
-    @SuppressWarnings("null")
 	@Override
     public void uploadUserImage(MultipartFile userImage) throws IOException, SQLException {
         if (!userImage.getContentType().startsWith("image")) {

@@ -1,10 +1,11 @@
-import { Outlet } from "react-router-dom";
+/* eslint-disable no-unused-vars */
+import { Outlet } from "react-router-dom"
 function App() {
   return (
     <>
-      <Outlet />
+      <Outlet/>
     </>
-  );
+  )
 }
 
-export default App;
+export default App

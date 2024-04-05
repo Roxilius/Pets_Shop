@@ -28,7 +28,6 @@ public class InitialDataLoader implements ApplicationRunner{
     @Autowired
     CategoryRepository categoryRepository;
 
-    @SuppressWarnings("null")
     @Override
     public void run(ApplicationArguments args) throws Exception {
 
