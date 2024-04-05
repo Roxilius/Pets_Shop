@@ -6,17 +6,25 @@ import {
   LayoutGrid,
   LayoutList,
 } from "lucide-react";
-import meowMix from "@/assets/moew-mix.png"
+import meowMix from "@/assets/moew-mix.png";
 import Header from "@/components/Header";
 import { useEffect } from "react";
 import { useState } from "react";
 import { useCookies } from "react-cookie";
 import Card from "@/components/Card";
+import CardList from "@/components/CardList";
 
 export default function Shop() {
   const [cookies, setCookies] = useCookies({});
   const [grid, setGrid] = useState(true);
   const [list, setList] = useState(false);
+
+  function formatRupiah(price) {
+    const reverse = price.toString().split("").reverse().join("");
+    const ribuan = reverse.match(/\d{1,3}/g);
+    const konver = ribuan.join(".").split("").reverse().join("");
+    return "Rp. " + konver;
+  }
 
   function handleGrid() {
     setGrid(true);
@@ -32,15 +40,8 @@ export default function Shop() {
   const [category, setCategory] = useState("");
   const [name, setName] = useState("");
 
-  function formatRupiah(price) {
-    const reverse = price.toString().split("").reverse().join("");
-    const ribuan = reverse.match(/\d{1,3}/g);
-    const konver = ribuan.join(".").split("").reverse().join("");
-    return "Rp. " + konver;
-  }
-
   function handleClickCategory(e) {
-    setName('');
+    setName("");
     setCategory(e.target.innerText);
     getProducts();
   }
@@ -76,10 +77,7 @@ export default function Shop() {
       <section className="w-10/12 m-auto p-3 flex gap-2">
         <div className="rounded p-3 flex items-center bg-orange-500 w-3/6  overflow-hidden group">
           <div className="text-white flex flex-col gap-3">
-            <p className="text-4xl">
-              Mediciend &
-              Pet Supplies
-            </p>
+            <p className="text-4xl">Mediciend & Pet Supplies</p>
           </div>
           <img
             src={meowMix}
@@ -89,10 +87,7 @@ export default function Shop() {
         </div>
         <div className="rounded p-3 flex items-center bg-violet-600 w-3/6  overflow-hidden group">
           <div className="text-white flex flex-col gap-3">
-            <p className="text-4xl">
-              Premium
-              Cat Food
-            </p>
+            <p className="text-4xl">Premium Cat Food</p>
           </div>
           <img
             src={meowMix}
@@ -139,6 +134,7 @@ export default function Shop() {
           <div className="mt-5">
             <h2 className="p-2 text-xl">Filter By Price</h2>
             <hr />
+            <input type="range" />
           </div>
         </div>
 
@@ -156,12 +152,33 @@ export default function Shop() {
               color={list ? "orange" : "black"}
               onClick={handleList}
             />
+            <select name="shorting" className="text-sm min-w-min">
+              <option value="default">default Shorting</option>
+              <option value="asc">Sort by price: low to high</option>
+              <option value="dsc">Sort by price: high to low</option>
+            </select>
           </div>
           {grid && (
             <div className="grid grid-cols-3 gap-3">
               {products &&
                 products.map((product) => (
-                  <Card key={product.id} product={product} />
+                  <Card
+                    key={product.id}
+                    product={product}
+                    formatRupiah={formatRupiah}
+                  />
+                ))}
+            </div>
+          )}
+          {list && (
+            <div className="flex flex-wrap gap-2">
+              {products &&
+                products.map((product) => (
+                  <CardList
+                    key={product.id}
+                    product={product}
+                    formatRupiah={formatRupiah}
+                  />
                 ))}
             </div>
           )}

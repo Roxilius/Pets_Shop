@@ -1,21 +1,14 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable react-refresh/only-export-components */
 /* eslint-disable react/prop-types */
-import { SquarePen, Trash2 , ShoppingBag} from "lucide-react";
-import { Info } from "lucide-react";
+import { ShoppingBag} from "lucide-react";
 import axios from "axios";
 import { useCookies } from "react-cookie";
 
 
-export default function Card({ product, openPopupEdit }) {
+export default function Card({ product, openPopupEdit, formatRupiah }) {
 
   const [cookies, setCookies] = useCookies();
-  function formatRupiah(price) {
-    const reverse = price.toString().split('').reverse().join('');
-    const ribuan = reverse.match(/\d{1,3}/g);
-    const konver = ribuan.join('.').split('').reverse().join('');
-    return 'Rp. ' + konver;
-  }
   function addTocart(id) {
     const request = {
       productId: id,
@@ -42,7 +35,7 @@ export default function Card({ product, openPopupEdit }) {
         </div>
       </div>
       <h4 className="text-violet-700">{formatRupiah(product.price)}</h4>
-      <h4 className="hover:text-orange-400">{product.name}</h4>
+      <h4 className="hover:text-orange-400 font-bold">{product.name}</h4>
     </div>
   );
 }
