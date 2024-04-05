@@ -29,7 +29,7 @@ export default function Card({ product, openPopupEdit }) {
   return (
     <div
       key={product.id}
-      className="p-3 border rounded hover:border-orange-400 flex flex-col gap-2 group"
+      className="p-3 border rounded hover:border-orange-400 flex flex-col gap-2 group cursor-pointer"
     > 
       <div className="cursor-pointer relative overflow-hidden ">
         <img src={`data:image/png;base64,${product.image}`} />

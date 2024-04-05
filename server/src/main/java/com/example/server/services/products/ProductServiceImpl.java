@@ -77,12 +77,9 @@ public class ProductServiceImpl implements ProductService{
     }
 
     @Override
-    public Optional<Products> getProduct(String id) {
-        try {
-            return productsRepository.findById(id);
-        } catch (Exception e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Product Not Found");
-        }
+    public ProductResponse getProduct(String id) {
+        Products products = productsRepository.findProductsById(id);
+        return toProduct(products);
     }
 
     @Override
