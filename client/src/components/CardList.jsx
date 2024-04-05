@@ -32,18 +32,7 @@ const CardList = ({ product, formatRupiah }) => {
           {product.name}
         </h1>
         <h1 className="text-slate-400 overflow-auto">
-          Lorem ipsum dolor sit amet, consectetur adipisicing elit.
-          Necessitatibus nostrum corporis eum voluptate, saepe quas modi
-          corrupti sint placeat quisquam laborum praesentium dolore possimus
-          doloremque quasi qui sunt adipisci est. Voluptas quam impedit neque
-          qui debitis reprehenderit dolorem officia rem laboriosam, modi eos
-          voluptate quos adipisci atque assumenda error dicta iure iusto beatae
-          quo. Voluptatem quis ullam porro temporibus, labore, nesciunt saepe
-          optio, in asperiores laboriosam natus facilis tempore dignissimos
-          nihil beatae molestiae sit. In earum cupiditate atque velit eaque
-          porro doloremque assumenda vitae repellat molestias accusamus,
-          aspernatur maiores delectus modi laudantium rerum unde nemo sunt
-          soluta mollitia illo exercitationem!
+          {product.description}
         </h1>
         <div
           onClick={() => addTocart(product.id)}

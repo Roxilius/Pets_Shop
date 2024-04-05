@@ -2952,6 +2952,15 @@ packages:
     resolution: {integrity: sha512-xWGDIW6x921xtzPkhiULtthJHoJvBbF3q26fzloPCK0hsvxtPVelvftw3zjbHWSkR2km9Z+4uxbDDK/6Zw9B8w==}
     dev: false
 
+  /react-range-slider@0.2.1(react@18.2.0):
+    resolution: {integrity: sha512-prEntVoxqnUrfxqQ140ZUq1c5Xs+Cv8iyOUPDqD6gWj1j2f5ZUyaKlzhGycuVC5d0umKaH3RFBium3ArSE20Wg==}
+    peerDependencies:
+      react: '>=0.14.x'
+    dependencies:
+      object-assign: 4.1.1
+      react: 18.2.0
+    dev: false
+
   /react-router-dom@6.22.3(react-dom@18.2.0)(react@18.2.0):
     resolution: {integrity: sha512-7ZILI7HjcE+p31oQvwbokjk6OA/bnFxrhJ19n82Ex9Ph8fNAq+Hm/7KchpMGlTgWhUxRHMMCut+vEtNpWpowKw==}
     engines: {node: '>=14.0.0'}

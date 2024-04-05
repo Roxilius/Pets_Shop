@@ -49,9 +49,9 @@ public class ProductServiceImpl implements ProductService{
     @Autowired
     ImageService imageService;
     @Override
-    public PageResponse<ProductResponse> getAllProducts(String name, String category, int page, int size, String sortBy, String sortOrder) {
+    public PageResponse<ProductResponse> getAllProducts(String name, String category, int page, int size, String sortBy, String sortOrder, Integer minPrice, Integer maxPrice) {
         Category categoryName = categoryRepository.findCategoryByName(category);
-        PageResponse<Products> productPage = productDao.getAll(name, categoryName, page, size, sortBy, sortOrder);
+        PageResponse<Products> productPage = productDao.getAll(name, categoryName, page, size, sortBy, sortOrder, minPrice, maxPrice);
         List<ProductResponse> productResponse = productPage.getItems().stream()
         .map(this::toProduct)
         .collect(Collectors.toList());

@@ -39,16 +39,26 @@ export default function Shop() {
   const [page, setPage] = useState(1);
   const [category, setCategory] = useState("");
   const [name, setName] = useState("");
+  const [orderBy, setOrderBy] = useState("");
+  const [minPrice, setMinPrice] = useState(0);
+  const [maxPrice, setMaxPrice] = useState(999999999);
 
   function handleClickCategory(e) {
     setName("");
+    setOrderBy("")
     setCategory(e.target.innerText);
+    getProducts();
+  }
+
+  function handleOrder(e) {
+    setOrderBy(e.target.value);
+    console.log(orderBy)
     getProducts();
   }
 
   function getProducts() {
     fetch(
-      `http://localhost:8080/products/get-all-products?page=${page}&name=${name}&category=${category}`
+      `http://localhost:8080/products/get-all-products?page=${page}&name=${name}&category=${category}&sortOrder=${orderBy}&sortBy=price&minPrice=${minPrice}&maxPrice=${maxPrice}`
     )
       .then((res) => res.json())
       .then((res) => {
@@ -134,7 +144,6 @@ export default function Shop() {
           <div className="mt-5">
             <h2 className="p-2 text-xl">Filter By Price</h2>
             <hr />
-            <input type="range" />
           </div>
         </div>
 
@@ -152,8 +161,8 @@ export default function Shop() {
               color={list ? "orange" : "black"}
               onClick={handleList}
             />
-            <select name="shorting" className="text-sm min-w-min">
-              <option value="default">default Shorting</option>
+            <select onChange={handleOrder} name="shorting" className="text-sm min-w-min">
+              <option value="">default Shorting</option>
               <option value="asc">Sort by price: low to high</option>
               <option value="dsc">Sort by price: high to low</option>
             </select>

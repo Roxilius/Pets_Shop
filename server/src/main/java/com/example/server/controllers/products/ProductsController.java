@@ -34,70 +34,77 @@ import lombok.extern.slf4j.Slf4j;
 public class ProductsController {
     @Autowired
     ProductService productService;
-    
+
     @GetMapping("/get-all-products")
-    public ResponseEntity<Object> getAll( @RequestParam(required = false) String name, @RequestParam(required = false) String category,
-    @RequestParam int page, @RequestParam(required = false) String sortBy, @RequestParam(required = false) String sortOrder){
-        try{
-            PageResponse<ProductResponse> response = productService.getAllProducts(name, category, page, 10, sortBy, sortOrder);
-            return ResponseEntity.ok().body(GenericResponse.success(response,"Success Get All Product"));
-        } catch(Exception e){
+    public ResponseEntity<Object> getAll(@RequestParam(required = false) String name,
+            @RequestParam(required = false) String category,
+            @RequestParam int page, @RequestParam(required = false) String sortBy,
+            @RequestParam(required = false) String sortOrder,
+            @RequestParam(required = false) Integer minPrice,
+            @RequestParam(required = false) Integer maxPrice
+            ) {
+        try {
+            PageResponse<ProductResponse> response = productService.getAllProducts(name, category, page, 10, sortBy,
+                    sortOrder, minPrice, maxPrice);
+            return ResponseEntity.ok().body(GenericResponse.success(response, "Success Get All Product"));
+        } catch (Exception e) {
             log.info(e.getMessage());
             return ResponseEntity.internalServerError().body(GenericResponse.eror(e.getMessage()));
         }
     }
 
     @GetMapping("/get-product/{id}")
-    public ResponseEntity<Object> getProduct(@PathVariable(value = "id") String id){
-        try{
-            return ResponseEntity.ok().body(GenericResponse.success(productService.getProduct(id),"Success Get Product"));
-        } catch(Exception e){
+    public ResponseEntity<Object> getProduct(@PathVariable(value = "id") String id) {
+        try {
+            return ResponseEntity.ok()
+                    .body(GenericResponse.success(productService.getProduct(id), "Success Get Product"));
+        } catch (Exception e) {
             log.info(e.getMessage());
             return ResponseEntity.internalServerError().body(GenericResponse.eror("Internal Server Error!"));
         }
     }
 
-    @PostMapping(value="/add-product",
-    consumes= MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping(value = "/add-product", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @SecurityRequirement(name = "Bearer Authentication")
-    public ResponseEntity<Object> addProduct(ProductRequest request ,@RequestParam("Product Image") MultipartFile file){
-        try{
-            productService.add(request,file);
-            return ResponseEntity.ok().body(GenericResponse.success(null,"Success Add New Product"));
-        }catch(ResponseStatusException e){
+    public ResponseEntity<Object> addProduct(ProductRequest request,
+            @RequestParam("Product Image") MultipartFile file) {
+        try {
+            productService.add(request, file);
+            return ResponseEntity.ok().body(GenericResponse.success(null, "Success Add New Product"));
+        } catch (ResponseStatusException e) {
             log.info(e.getMessage());
             return ResponseEntity.status(e.getStatusCode()).body(GenericResponse.eror(e.getReason()));
-        }catch(Exception e){
+        } catch (Exception e) {
             return ResponseEntity.internalServerError().body(GenericResponse.eror("Internal Server Error!"));
         }
     }
 
-    @PutMapping(value="/edit-product/{id}",
-    consumes= MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PutMapping(value = "/edit-product/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @SecurityRequirement(name = "Bearer Authentication")
-    public ResponseEntity<Object> editProduct(@PathVariable(value = "id") String id,ProductRequest request ,@RequestParam("Product Image") MultipartFile file){
-        try{
-            productService.edit(request,file, id);
-            return ResponseEntity.ok().body(GenericResponse.success(null,"Success Edit Product"));
-        }catch(ResponseStatusException e){
+    public ResponseEntity<Object> editProduct(@PathVariable(value = "id") String id, ProductRequest request,
+            @RequestParam("Product Image") MultipartFile file) {
+        try {
+            productService.edit(request, file, id);
+            return ResponseEntity.ok().body(GenericResponse.success(null, "Success Edit Product"));
+        } catch (ResponseStatusException e) {
             log.info(e.getMessage());
             return ResponseEntity.status(e.getStatusCode()).body(GenericResponse.eror(e.getReason()));
-        }catch(Exception e){
+        } catch (Exception e) {
             return ResponseEntity.internalServerError().body(GenericResponse.eror("Internal Server Error!"));
         }
     }
-    
+
     @DeleteMapping("/delete-product/{id}")
     @SecurityRequirement(name = "Bearer Authentication")
-    public ResponseEntity<Object> deleteProduct(@PathVariable(value = "id") String id){
-        try{
+    public ResponseEntity<Object> deleteProduct(@PathVariable(value = "id") String id) {
+        try {
             productService.delete(id);
-            return ResponseEntity.ok().body(GenericResponse.success(null,"Success Delete Product"));
-        }catch (ResponseStatusException e) {
+            return ResponseEntity.ok().body(GenericResponse.success(null, "Success Delete Product"));
+        } catch (ResponseStatusException e) {
             log.info(e.getMessage());
             return ResponseEntity.status(e.getStatusCode()).body(GenericResponse.eror(e.getReason()));
-    
-        } catch(Exception e){
+
+        } catch (Exception e) {
             log.info(e.getMessage());
             return ResponseEntity.internalServerError().body(GenericResponse.eror("Internal Server Error!"));
         }

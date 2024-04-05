@@ -5,5 +5,5 @@ import com.example.server.models.Category;
 import com.example.server.models.Products;
 
 public interface ProductDao {
-    PageResponse<Products> getAll(String name, Category category, int page, int size, String sortBy, String sortOrder);
+    PageResponse<Products> getAll(String name, Category category, int page, int size, String sortBy, String sortOrder, Integer minPrice, Integer maxPrice);
 }
