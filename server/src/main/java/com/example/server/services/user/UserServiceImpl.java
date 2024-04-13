@@ -24,7 +24,8 @@ import com.example.server.constants.RolesConstant;
 import com.example.server.data_transfer_object.user.ChangePasswordRequest;
 import com.example.server.data_transfer_object.user.LoginRequest;
 import com.example.server.data_transfer_object.user.LoginResponse;
-import com.example.server.data_transfer_object.user.Register;
+import com.example.server.data_transfer_object.user.UserRequest;
+import com.example.server.data_transfer_object.user.UserResponse;
 import com.example.server.jwt.JwtUtil;
 import com.example.server.models.ForgotPassword;
 import com.example.server.models.Roles;
@@ -33,6 +34,7 @@ import com.example.server.repositorys.ForgotPasswordRepository;
 import com.example.server.repositorys.RolesRepository;
 import com.example.server.repositorys.UsersRepository;
 import com.example.server.services.email.EmailService;
+import com.example.server.services.image.ImageService;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -48,10 +50,12 @@ public class UserServiceImpl implements UserService {
     RolesRepository rolesRepository;
     @Autowired
     JwtUtil jwtUtil;
+    @Autowired
+    ImageService imageService;
 
     @Override
     @Transactional
-    public Register register(Register request) {
+    public UserRequest register(UserRequest request) {
         Users user = usersRepository.findByEmail(request.getEmail()).orElse(null);
         if (user == null) {
             Users newUser = new Users();
@@ -68,6 +72,41 @@ public class UserServiceImpl implements UserService {
             return request;
         }
         throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Email Sudah Terdaftar");
+    }
+    public UserRequest editProfile(UserRequest request) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        Users user = usersRepository.findUsersByEmail(auth.getName());
+        Users emailUser = usersRepository.findByEmail(request.getEmail()).orElse(null);
+        if (request.getEmail().equals(emailUser.getEmail())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Email Sudah Terdaftar");
+        }
+        user.setFullName(request.getFullName());
+        user.setGender(request.getGender());
+        user.setPhoneNumber(request.getPhoneNumber());
+        user.setEmail(request.getEmail());
+        user.setPassword(passwordEncoder.encode(request.getPassword()));
+        usersRepository.save(user);
+        return request;
+    }
+    @Override
+    public UserResponse profile() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        Users user = usersRepository.findUsersByEmail(auth.getName());
+        try {
+            return UserResponse.builder()
+            .id(user.getId())
+            .email(user.getEmail())
+            .fullName(user.getFullName())
+            .dateOfBirth(user.getDateOfBirth())
+            .address(user.getAddress())
+            .phoneNumber(user.getPhoneNumber())
+            .gender(user.getGender())
+            .image(user.getImage() != null ? imageService.convertImage(user.getImage()) : null)
+            .build();
+        } catch (IOException | SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
 	@Override

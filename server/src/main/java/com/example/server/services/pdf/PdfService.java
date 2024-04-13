@@ -1,11 +1,11 @@
-// package com.example.server.services.pdf;
+package com.example.server.services.pdf;
 
-// import java.io.IOException;
+import java.io.IOException;
 
-// import org.hibernate.exception.DataException;
+import org.hibernate.exception.DataException;
 
-// import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.DocumentException;
 
-// public interface PdfService {
-//     byte[] generatePdfFromDatabase() throws IOException, DataException, DocumentException;
-// }
+public interface PdfService {
+    byte[] generatePdfFromDatabase() throws IOException, DataException, DocumentException;
+}
