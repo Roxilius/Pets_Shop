@@ -24,6 +24,7 @@ import com.example.server.constants.RolesConstant;
 import com.example.server.data_transfer_object.user.ChangePasswordRequest;
 import com.example.server.data_transfer_object.user.LoginRequest;
 import com.example.server.data_transfer_object.user.LoginResponse;
+import com.example.server.data_transfer_object.user.Register;
 import com.example.server.data_transfer_object.user.UserRequest;
 import com.example.server.data_transfer_object.user.UserResponse;
 import com.example.server.jwt.JwtUtil;
@@ -55,7 +56,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public UserRequest register(UserRequest request) {
+    public Register register(Register request) {
         Users user = usersRepository.findByEmail(request.getEmail()).orElse(null);
         if (user == null) {
             Users newUser = new Users();
@@ -77,14 +78,19 @@ public class UserServiceImpl implements UserService {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         Users user = usersRepository.findUsersByEmail(auth.getName());
         Users emailUser = usersRepository.findByEmail(request.getEmail()).orElse(null);
-        if (request.getEmail().equals(emailUser.getEmail())) {
+        if (emailUser != null && request.getEmail().equals(emailUser.getEmail())) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Email Sudah Terdaftar");
+        } else if (emailUser != null && user.getEmail().equals(request.getEmail())) {
+            user.setEmail(request.getEmail());
         }
         user.setFullName(request.getFullName());
+        user.setAddress(request.getAddress());
         user.setGender(request.getGender());
+        user.setDateOfBirth(request.getDateOfBirth());
         user.setPhoneNumber(request.getPhoneNumber());
-        user.setEmail(request.getEmail());
-        user.setPassword(passwordEncoder.encode(request.getPassword()));
+        if (request.getPassword() != null) {
+            user.setPassword(passwordEncoder.encode(request.getPassword()));
+        }
         usersRepository.save(user);
         return request;
     }
@@ -108,7 +114,6 @@ public class UserServiceImpl implements UserService {
             return null;
         }
     }
-
 	@Override
     public void uploadUserImage(MultipartFile userImage) throws IOException, SQLException {
         if (!userImage.getContentType().startsWith("image")) {
@@ -150,7 +155,7 @@ public class UserServiceImpl implements UserService {
         if (existFp != null ) {
             forgotPasswordRepository.delete(existFp);
         }
-        // sendEmail(email, otp);
+        emailSevice.emailOtpVerify(email, otp);
         forgotPasswordRepository.save(fp);
     }
     @Override

@@ -53,7 +53,7 @@ public class EmailServiceImpl implements EmailService{
         }
     }
     @Override
-    public void emailOtpVerify(String to, String name, Integer otp) {
+    public void emailOtpVerify(String to, Integer otp) {
         try {
             MimeMessage message = emailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(
@@ -61,9 +61,8 @@ public class EmailServiceImpl implements EmailService{
             helper.setFrom("noreply@PetShop.com");
             helper.setTo(to);
             Map<String, Object> variables = new HashMap<>();
-            variables.put("name", name);
             variables.put("otp", otp);
-            helper.setText(thymeleafService.createContext("registration.html", variables),true);
+            helper.setText(thymeleafService.createContext("verify-otp.html", variables),true);
             helper.setSubject("Verify OTP For Your Forgot Password Account");
             emailSender.send(message);
         } catch (Exception e) {

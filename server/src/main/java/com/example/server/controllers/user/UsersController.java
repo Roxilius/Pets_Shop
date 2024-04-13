@@ -18,6 +18,7 @@ import com.example.server.data_transfer_object.GenericResponse;
 import com.example.server.data_transfer_object.user.ChangePasswordRequest;
 import com.example.server.data_transfer_object.user.LoginRequest;
 import com.example.server.data_transfer_object.user.LoginResponse;
+import com.example.server.data_transfer_object.user.Register;
 import com.example.server.data_transfer_object.user.UserRequest;
 import com.example.server.services.user.UserService;
 
@@ -33,7 +34,7 @@ public class UsersController {
     @Autowired
     UserService userService;
     @PostMapping("/register")
-    public ResponseEntity<Object> register(@RequestBody UserRequest request){
+    public ResponseEntity<Object> register(@RequestBody Register request){
         try{
             return ResponseEntity.ok().body(GenericResponse.success(userService.register(request),
             "Successfully Register New User"));
@@ -52,6 +53,7 @@ public class UsersController {
         }catch(ResponseStatusException e){
             return ResponseEntity.status(e.getStatusCode()).body(GenericResponse.eror(e.getReason()));
         }catch(Exception e){
+            log.info(e.getMessage());
             return ResponseEntity.internalServerError().body(GenericResponse.eror("Internal Server Error!"));
         }
     }

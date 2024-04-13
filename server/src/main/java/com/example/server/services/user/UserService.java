@@ -10,11 +10,12 @@ import org.springframework.web.multipart.MultipartFile;
 import com.example.server.data_transfer_object.user.ChangePasswordRequest;
 import com.example.server.data_transfer_object.user.LoginRequest;
 import com.example.server.data_transfer_object.user.LoginResponse;
+import com.example.server.data_transfer_object.user.Register;
 import com.example.server.data_transfer_object.user.UserRequest;
 import com.example.server.data_transfer_object.user.UserResponse;
 
 public interface UserService {
-    UserRequest register(UserRequest request);
+    Register register(Register request);
     void uploadUserImage(MultipartFile userImage) throws IOException, SQLException;
     LoginResponse login(LoginRequest request);
     UserRequest editProfile(UserRequest request);
