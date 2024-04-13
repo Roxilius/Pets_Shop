@@ -17,13 +17,13 @@ import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
 
 @Repository
-public class ProductDaoImpl implements ProductDao{
+public class ProductDaoImpl implements ProductDao {
     @Autowired
     EntityManager entityManager;
 
     @Override
     public PageResponse<Products> getAll(String name, Category category, int page, int size,
-    String sortBy, String sortOrder, Integer minPrice, Integer maxPrice) {
+            String sortBy, String sortOrder, Integer minPrice, Integer maxPrice) {
 
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaQuery<Products> criteriaQuery = criteriaBuilder.createQuery(Products.class);
@@ -41,14 +41,14 @@ public class ProductDaoImpl implements ProductDao{
         }
 
         List<Products> result = entityManager.createQuery(criteriaQuery)
-        .setFirstResult((page - 1) * size)
-        .setMaxResults(size)
-        .getResultList();
+                .setFirstResult((page - 1) * size)
+                .setMaxResults(size)
+                .getResultList();
 
         CriteriaQuery<Long> countQuery = criteriaBuilder.createQuery(Long.class);
         Root<Products> root = countQuery.from(Products.class);
         countQuery.select(criteriaBuilder.count(root))
-        .where(createPredicate(criteriaBuilder, root, name, category, minPrice, maxPrice));
+                .where(createPredicate(criteriaBuilder, root, name, category, minPrice, maxPrice));
 
         Long totalItem = entityManager.createQuery(countQuery).getSingleResult();
 
@@ -56,7 +56,7 @@ public class ProductDaoImpl implements ProductDao{
     }
 
     private Predicate[] createPredicate(CriteriaBuilder criteriaBuilder, Root<Products> root,
-    String name, Category category, Integer minPrice, Integer maxPrice) {
+            String name, Category category, Integer minPrice, Integer maxPrice) {
         List<Predicate> predicates = new ArrayList<>();
 
         if (name != null && !name.isBlank() && !name.isEmpty()) {

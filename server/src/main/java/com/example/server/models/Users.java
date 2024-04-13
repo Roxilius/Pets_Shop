@@ -62,4 +62,7 @@ public class Users {
 
     @OneToOne(mappedBy = "user")
     private ForgotPassword forgotPassword;
+
+    @OneToOne(mappedBy = "users")
+    private Cart cart;
 }

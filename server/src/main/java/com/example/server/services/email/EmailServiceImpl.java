@@ -52,4 +52,22 @@ public class EmailServiceImpl implements EmailService{
             e.printStackTrace();
         }
     }
+    @Override
+    public void emailOtpVerify(String to, String name, Integer otp) {
+        try {
+            MimeMessage message = emailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(
+            message, MimeMessageHelper.MULTIPART_MODE_MIXED_RELATED, StandardCharsets.UTF_8.name());
+            helper.setFrom("noreply@PetShop.com");
+            helper.setTo(to);
+            Map<String, Object> variables = new HashMap<>();
+            variables.put("name", name);
+            variables.put("otp", otp);
+            helper.setText(thymeleafService.createContext("registration.html", variables),true);
+            helper.setSubject("Verify OTP For Your Forgot Password Account");
+            emailSender.send(message);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }

@@ -112,22 +112,24 @@ public class ProductServiceImpl implements ProductService{
     @Override
     @Transactional
     public void edit(ProductRequest request, MultipartFile productImage, String id) throws IOException, SQLException{
-        if (!productImage.getContentType().startsWith("image")) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Unsupported File Type");
-        }
         Products product = productsRepository.findById(id).orElse(null);
         product.setName(request.getName());
+        product.setDescription(request.getCategory());
+        product.setPrice(request.getPrice());
+        product.setStock(request.getStock());
         Category category = categoryRepository.findCategoryByName(request.getCategory());
         if (category != null) {
             product.setCategory(category);
         } else{
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Category Tidak Ada");
         }
-        product.setDescription(request.getCategory());
-        product.setPrice(request.getPrice());
-        product.setStock(request.getStock());
-        product.setImage(new SerialBlob(productImage.getBytes()));
-        productsRepository.saveAndFlush(product);
+        if (productImage != null) {
+            if (!productImage.getContentType().startsWith("image")) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Unsupported File Type");
+            }
+            product.setImage(new SerialBlob(productImage.getBytes()));
+        }
+        productsRepository.save(product);
     }
 
     @Override
@@ -136,7 +138,7 @@ public class ProductServiceImpl implements ProductService{
     }
 
     @Override
-    public byte[] generateReport() throws IOException {
+    public byte[] generateExel() throws IOException {
         Workbook workbook = new XSSFWorkbook();
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         Sheet sheet = workbook.createSheet();

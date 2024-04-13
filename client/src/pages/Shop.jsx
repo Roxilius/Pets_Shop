@@ -19,13 +19,6 @@ export default function Shop() {
   const [grid, setGrid] = useState(true);
   const [list, setList] = useState(false);
 
-  function formatRupiah(price) {
-    const reverse = price.toString().split("").reverse().join("");
-    const ribuan = reverse.match(/\d{1,3}/g);
-    const konver = ribuan.join(".").split("").reverse().join("");
-    return "Rp. " + konver;
-  }
-
   function handleGrid() {
     setGrid(true);
     setList(false);
@@ -174,7 +167,6 @@ export default function Shop() {
                   <Card
                     key={product.id}
                     product={product}
-                    formatRupiah={formatRupiah}
                   />
                 ))}
             </div>
@@ -186,7 +178,6 @@ export default function Shop() {
                   <CardList
                     key={product.id}
                     product={product}
-                    formatRupiah={formatRupiah}
                   />
                 ))}
             </div>

@@ -11,21 +11,20 @@ const routers = createBrowserRouter([
   {
     path: "/",
     element: <App />,
-    // errorElement: <ErrorPage />,
     children: [
       {
         path: "/",
         element: <Home />
       },
       {
-        path: "/Admin",
-        element: <Admin />
-      },
-      {
         path: '/shop',
         element: <Shop/>
       }
     ],
+  },
+  {
+    path: "/Admin",
+    element: <Admin />,
   },
 ]);
 

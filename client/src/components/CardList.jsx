@@ -27,13 +27,16 @@ const CardList = ({ product, formatRupiah }) => {
     >
       <img src={`data:image/png;base64,${product.image}`} width={200} />
       <div className="flex flex-col gap-3">
-        <h1 className="text-orange-400">{formatRupiah(product.price)}</h1>
+        <h1 className="text-orange-400">
+          {product.price.toLocaleString("id-ID", {
+            style: "currency",
+            currency: "IDR",
+          })}
+        </h1>
         <h1 className="hover:text-orange-400 text-lg font-bold">
           {product.name}
         </h1>
-        <h1 className="text-slate-400 overflow-auto">
-          {product.description}
-        </h1>
+        <h1 className="text-slate-400 overflow-auto">{product.description}</h1>
         <div
           onClick={() => addTocart(product.id)}
           className="flex p-2 gap-1 w-2/5 items-center justify-center rounded-full hover:bg-orange-400 transition-all bg-violet-500"

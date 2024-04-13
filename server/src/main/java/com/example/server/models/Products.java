@@ -1,17 +1,15 @@
 package com.example.server.models;
 
 import java.sql.Blob;
-import java.util.HashSet;
-import java.util.Set;
 
 import org.hibernate.annotations.UuidGenerator;
+
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Lob;
-import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -47,6 +45,7 @@ public class Products {
     @JoinColumn(name = "category_id", referencedColumnName = "id", nullable = false)
     private Category category;
 
-    @ManyToMany
-    private Set<Carts> carts = new HashSet<>();
+    public Products(String id, String name, Integer price, Integer stock, String description, Blob image, Category category, Integer qty, Integer amount){
+        
+    }
 }

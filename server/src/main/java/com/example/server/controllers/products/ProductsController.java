@@ -19,6 +19,7 @@ import com.example.server.data_transfer_object.GenericResponse;
 import com.example.server.data_transfer_object.PageResponse;
 import com.example.server.data_transfer_object.products.ProductRequest;
 import com.example.server.data_transfer_object.products.ProductResponse;
+// import com.example.server.services.pdf.PdfService;
 import com.example.server.services.products.ProductService;
 
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -34,6 +35,8 @@ import lombok.extern.slf4j.Slf4j;
 public class ProductsController {
     @Autowired
     ProductService productService;
+    // @Autowired
+    // PdfService pdfService;
 
     @GetMapping("/get-all-products")
     public ResponseEntity<Object> getAll(@RequestParam(required = false) String name,
@@ -82,14 +85,19 @@ public class ProductsController {
     @PutMapping(value = "/edit-product/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @SecurityRequirement(name = "Bearer Authentication")
     public ResponseEntity<Object> editProduct(@PathVariable(value = "id") String id, ProductRequest request,
-            @RequestParam("Product Image") MultipartFile file) {
+    @RequestParam(required = false, name = "Product Image") MultipartFile file) {
         try {
-            productService.edit(request, file, id);
+            if (file == null) {
+                productService.edit(request, null, id);
+            }else{
+                productService.edit(request, file, id);
+            }
             return ResponseEntity.ok().body(GenericResponse.success(null, "Success Edit Product"));
         } catch (ResponseStatusException e) {
             log.info(e.getMessage());
             return ResponseEntity.status(e.getStatusCode()).body(GenericResponse.eror(e.getReason()));
         } catch (Exception e) {
+            log.info(e.getMessage());
             return ResponseEntity.internalServerError().body(GenericResponse.eror("Internal Server Error!"));
         }
     }
@@ -110,12 +118,12 @@ public class ProductsController {
         }
     }
 
-    @GetMapping("/report")
+    @GetMapping("/report-excel")
     @SecurityRequirement(name = "Bearer Authentication")
-    public ResponseEntity<Object> report(HttpServletResponse response) {
+    public ResponseEntity<Object> exel(HttpServletResponse response) {
         try {
             response.setHeader("Content-Disposition", "attachment; filename=report.xlsx");
-            return ResponseEntity.ok(productService.generateReport());
+            return ResponseEntity.ok(productService.generateExel());
         } catch (Exception e) {
             log.info(e.getMessage());
             return ResponseEntity.internalServerError().body(GenericResponse.eror("Internal Server Error!"));

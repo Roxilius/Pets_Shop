@@ -1,5 +1,6 @@
 package com.example.server.models;
 
+import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -18,22 +19,24 @@ import lombok.NoArgsConstructor;
 
 @Entity
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
-public class Carts {
+@NoArgsConstructor
+public class Transaction {
+    
     @Id
     @UuidGenerator
-    @Column(name = "id",length = 36,nullable = false)
+    @Column(name = "id")
     private String id;
+    @Column(name = "transaction_date")
+    private LocalDate date;
     
-    @Column(name = "quantity")
-    private Integer quantity;
-    
-    @ManyToMany
-    @JoinTable(name = "cart_products",joinColumns = @JoinColumn(name = "cart_id"),inverseJoinColumns = @JoinColumn(name = "product_id"))
-    private Set<Products> products = new HashSet<>();
-    
+    private Integer totalAmount;
+
     @ManyToOne
     @JoinColumn(name = "user_id",referencedColumnName = "id", nullable = false)
     private Users users;
+
+    @ManyToMany
+    @JoinTable(name = "transaction_products",joinColumns = @JoinColumn(name = "transaction_id"),inverseJoinColumns = @JoinColumn(name = "product_id"))
+    private Set<Products> products = new HashSet<>();
 }

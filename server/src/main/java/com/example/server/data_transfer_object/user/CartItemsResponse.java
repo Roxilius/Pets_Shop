@@ -1,7 +1,7 @@
 package com.example.server.data_transfer_object.user;
 
-import java.util.List;
 
+import com.example.server.data_transfer_object.products.ProductResponse;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -12,9 +12,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class CartResponse {
+public class CartItemsResponse {
     private String id;
-    private String email;
-    private Integer totalAmount;
-    private List<CartItemsResponse> cartItems;
+    private Integer qty;
+    private Integer amount;
+    private ProductResponse product;
 }

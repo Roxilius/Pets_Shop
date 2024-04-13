@@ -15,5 +15,5 @@ public interface ProductService {
     void add(ProductRequest request,MultipartFile productImage) throws IOException, SQLException;
     void edit(ProductRequest request,MultipartFile productImage, String id) throws IOException, SQLException;
     void delete(String id);
-    byte[] generateReport() throws IOException;
+    byte[] generateExel() throws IOException;
 }
