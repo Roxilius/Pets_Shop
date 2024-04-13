@@ -153,8 +153,14 @@ public class CartServiceImpl implements CartService {
         }
     }
 
-    // @Override
-    // public void delete(String id) {
-    // cartsRepository.deleteById(id);
-    // }
+    @Override
+    public void deleteAll() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        Users user = usersRepository.findUsersByEmail(auth.getName());
+        Cart cart = cartRepository.findCartByUsers(user);
+        Set<CartItems> cartItems = cart.getCartItems();
+        System.out.println(cartItems);
+        cartRepository.delete(cart);
+        cartItems.forEach(i -> cartItemsRepository.delete(i));
+    }
 }

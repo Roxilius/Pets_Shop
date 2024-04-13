@@ -3,6 +3,7 @@ package com.example.server.controllers.cart;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -53,14 +54,18 @@ public class CartController {
         }
     }
 
-//     @DeleteMapping("/{id}")
-//     @SecurityRequirement(name = "Bearer Authentication")
-//     public ResponseEntity<Object> remove(@PathVariable String id){
-//         try {
-//             cartsService.delete(id);
-//             return ResponseEntity.ok().body(GenericResponse.success(null, "Successfully Delete cart"));
-//         } catch (Exception e) {
-//             return ResponseEntity.internalServerError().body(GenericResponse.eror("Internal Server Error!"));
-//         }
-//     }
+    @DeleteMapping()
+    @SecurityRequirement(name = "Bearer Authentication")
+    public ResponseEntity<Object> removeAll(){
+        try {
+            cartService.deleteAll();
+            return ResponseEntity.ok().body(GenericResponse.success(null, "Successfully Delete cart"));
+        } catch (ResponseStatusException e) {
+            log.info(e.getMessage());
+            return ResponseEntity.status(e.getStatusCode()).body(GenericResponse.eror(e.getReason()));
+        } catch (Exception e) {
+            log.info(e.getMessage());
+            return ResponseEntity.internalServerError().body(GenericResponse.eror("Internal Server Error!"));
+        }
+    }
 }
