@@ -10,5 +10,4 @@ import com.example.server.models.Users;
 public interface CartRepository extends JpaRepository<Cart, String>{
     Cart findCartByUsers(Users user);
     Cart findCartByCartItems(CartItems cartItems);
-    Cart findCartByUsersAndCartItems(Users user, CartItems cartItems);
 }

@@ -46,7 +46,7 @@ public class SecurityConfig {
                                 "/swagger-ui/**")
                         .permitAll()
                         .requestMatchers("/upload-user-image",
-                                "/cart",
+                                "/cart/**",
                                 "/auth/edit-profile",
                                 "/auth/profile"
                         ).hasAuthority(RolesConstant.USER_ROLE)

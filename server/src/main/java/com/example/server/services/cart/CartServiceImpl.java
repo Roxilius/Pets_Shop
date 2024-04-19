@@ -163,4 +163,20 @@ public class CartServiceImpl implements CartService {
         cartRepository.delete(cart);
         cartItems.forEach(i -> cartItemsRepository.delete(i));
     }
+
+    @Override
+    public void deleteCartItems(String id) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        Users user = usersRepository.findUsersByEmail(auth.getName());
+        Cart cart = cartRepository.findCartByUsers(user);
+        CartItems cartItems = cartItemsRepository.findCartItemsById(id);
+        for (CartItems c : cart.getCartItems()) {
+            if (c.getId().equals(cartItems.getId())) {
+                cart.getCartItems().remove(c);
+                cartRepository.save(cart);
+                cartItemsRepository.delete(cartItems);
+                break;
+            }
+        }
+    }
 }

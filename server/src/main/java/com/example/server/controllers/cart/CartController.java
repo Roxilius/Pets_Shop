@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -28,7 +29,7 @@ public class CartController {
     @Autowired
     CartService cartService;
 
-    @GetMapping
+    @GetMapping("/find-all")
     @SecurityRequirement(name = "Bearer Authentication")
     public ResponseEntity<Object> findAll(){
         try {
@@ -39,7 +40,7 @@ public class CartController {
         }
     }
 
-    @PostMapping
+    @PostMapping("/add-cart-items")
     @SecurityRequirement(name = "Bearer Authentication")
     public ResponseEntity<Object> addCart(@RequestBody CartRequest request){
         try {
@@ -54,12 +55,27 @@ public class CartController {
         }
     }
 
-    @DeleteMapping()
+    @DeleteMapping("/delete-all-cart")
     @SecurityRequirement(name = "Bearer Authentication")
     public ResponseEntity<Object> removeAll(){
         try {
             cartService.deleteAll();
             return ResponseEntity.ok().body(GenericResponse.success(null, "Successfully Delete cart"));
+        } catch (ResponseStatusException e) {
+            log.info(e.getMessage());
+            return ResponseEntity.status(e.getStatusCode()).body(GenericResponse.eror(e.getReason()));
+        } catch (Exception e) {
+            log.info(e.getMessage());
+            return ResponseEntity.internalServerError().body(GenericResponse.eror("Internal Server Error!"));
+        }
+    }
+
+    @DeleteMapping("/delete-cart-items/{id}")
+    @SecurityRequirement(name = "Bearer Authentication")
+    public ResponseEntity<Object> removeCartItems(@PathVariable(value = "id") String id){
+        try {
+            cartService.deleteCartItems(id);
+            return ResponseEntity.ok().body(GenericResponse.success(null, "Successfully Delete cart items"));
         } catch (ResponseStatusException e) {
             log.info(e.getMessage());
             return ResponseEntity.status(e.getStatusCode()).body(GenericResponse.eror(e.getReason()));

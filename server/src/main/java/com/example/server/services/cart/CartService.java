@@ -7,4 +7,5 @@ public interface CartService {
     void add(CartRequest request);
     CartResponse findAllCart();
     void deleteAll();
+    void deleteCartItems(String id);
 }
