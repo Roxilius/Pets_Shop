@@ -47,7 +47,7 @@ public class CartServiceImpl implements CartService {
             Users user = usersRepository.findUsersByEmail(auth.getName());
             Cart cart = cartRepository.findCartByUsers(user);
             List<CartItemsResponse> cartItemsResponse = cart.getCartItems().stream().map(this::toCartItemsResponse)
-            .collect(Collectors.toList());
+                    .collect(Collectors.toList());
             Integer totalAmount = 0;
             for (CartItemsResponse cartItem : cartItemsResponse) {
                 totalAmount += cartItem.getAmount();
@@ -92,64 +92,62 @@ public class CartServiceImpl implements CartService {
 
     @Override
     public void add(CartRequest request) {
-        try {
-            if (request.getQuantity() < 0) {
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid Qty");
-            }
-            Products product = productsRepository.findProductsById(request.getProductId());
-            if (product.getStock() < request.getQuantity()) {
-                request.setQuantity(product.getStock());
-            }
+        Products product = productsRepository.findProductsById(request.getProductId());
+        if (request.getQuantity() < 0) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid Qty");
+        } else if (product.getStock() == 0) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Out of Stock");
+        }
+        if (product.getStock() < request.getQuantity()) {
+            request.setQuantity(product.getStock());
+        }
 
-            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-            Users user = usersRepository.findUsersByEmail(auth.getName());
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        Users user = usersRepository.findUsersByEmail(auth.getName());
 
-            Cart cart = cartRepository.findCartByUsers(user);
-            if (cart == null) {
-                Cart newCart = new Cart();
-                newCart.setUsers(user);
-                cartRepository.save(newCart);
+        Cart cart = cartRepository.findCartByUsers(user);
+        if (cart == null) {
+            Cart newCart = new Cart();
+            newCart.setUsers(user);
+            cartRepository.save(newCart);
 
-                CartItems cartItems = new CartItems();
-                cartItems.setQty(request.getQuantity());
-                cartItems.setAmount(request.getQuantity() * product.getPrice());
-                cartItems.setProduct(product);
-                cartItemsRepository.save(cartItems);
+            CartItems cartItems = new CartItems();
+            cartItems.setQty(request.getQuantity());
+            cartItems.setAmount(request.getQuantity() * product.getPrice());
+            cartItems.setProduct(product);
+            cartItemsRepository.save(cartItems);
 
-                newCart.getCartItems().add(cartItems);
-                cartRepository.save(newCart);
-            } else {
-                // jika product sudah ada di keranjang user
-                Boolean same = false;
-                Set<CartItems> cartItems = cart.getCartItems();
-                for (CartItems items : cartItems) {
-                    if (items.getProduct().equals(product)) {
-                        same = true;
-                        if ((request.getQuantity() + items.getQty()) > product.getStock()) {
-                            items.setQty(product.getStock());
-                        } else{
-                            items.setQty(request.getQuantity() + items.getQty());
-                        }
-                        items.setAmount(product.getPrice() * items.getQty());
-                        break;
+            newCart.getCartItems().add(cartItems);
+            cartRepository.save(newCart);
+        } else {
+            // jika product sudah ada di keranjang user
+            Boolean same = false;
+            Set<CartItems> cartItems = cart.getCartItems();
+            for (CartItems items : cartItems) {
+                if (items.getProduct().equals(product)) {
+                    same = true;
+                    if ((request.getQuantity() + items.getQty()) > product.getStock()) {
+                        items.setQty(product.getStock());
+                    } else {
+                        items.setQty(request.getQuantity() + items.getQty());
                     }
-                }
-                if (same) {
-                    cart.setCartItems(cartItems);
-                    cartRepository.save(cart);
-                } else{
-                    // jika product tidak ada di keranjang user
-                    CartItems buffCartItems = new CartItems();
-                    buffCartItems.setQty(request.getQuantity());
-                    buffCartItems.setAmount(request.getQuantity() * product.getPrice());
-                    buffCartItems.setProduct(product);
-                    cartItemsRepository.save(buffCartItems);
-                    cart.getCartItems().add(buffCartItems);
-                    cartRepository.save(cart);
+                    items.setAmount(product.getPrice() * items.getQty());
+                    break;
                 }
             }
-        } catch (Exception e) {
-            e.printStackTrace();
+            if (same) {
+                cart.setCartItems(cartItems);
+                cartRepository.save(cart);
+            } else {
+                // jika product tidak ada di keranjang user
+                CartItems buffCartItems = new CartItems();
+                buffCartItems.setQty(request.getQuantity());
+                buffCartItems.setAmount(request.getQuantity() * product.getPrice());
+                buffCartItems.setProduct(product);
+                cartItemsRepository.save(buffCartItems);
+                cart.getCartItems().add(buffCartItems);
+                cartRepository.save(cart);
+            }
         }
     }
 
@@ -158,6 +156,9 @@ public class CartServiceImpl implements CartService {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         Users user = usersRepository.findUsersByEmail(auth.getName());
         Cart cart = cartRepository.findCartByUsers(user);
+        if (cart == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Your Cart Is Empty");
+        }
         Set<CartItems> cartItems = cart.getCartItems();
         System.out.println(cartItems);
         cartRepository.delete(cart);

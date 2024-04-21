@@ -24,7 +24,7 @@ public class Cart {
     @UuidGenerator
     @Column(name = "id",length = 36,nullable = false)
     private String id;
-    
+
     @OneToMany
     private Set<CartItems> cartItems = new HashSet<>();
     
