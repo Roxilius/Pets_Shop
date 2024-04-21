@@ -44,8 +44,7 @@ public class ProductsController {
             @RequestParam int page, @RequestParam(required = false) String sortBy,
             @RequestParam(required = false) String sortOrder,
             @RequestParam(required = false) Integer minPrice,
-            @RequestParam(required = false) Integer maxPrice
-            ) {
+            @RequestParam(required = false) Integer maxPrice) {
         try {
             PageResponse<ProductResponse> response = productService.getAllProducts(name, category, page, 10, sortBy,
                     sortOrder, minPrice, maxPrice);
@@ -85,11 +84,11 @@ public class ProductsController {
     @PutMapping(value = "/edit-product/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @SecurityRequirement(name = "Bearer Authentication")
     public ResponseEntity<Object> editProduct(@PathVariable(value = "id") String id, ProductRequest request,
-    @RequestParam(required = false, name = "Product Image") MultipartFile file) {
+            @RequestParam(required = false, name = "Product Image") MultipartFile file) {
         try {
             if (file == null) {
                 productService.edit(request, null, id);
-            }else{
+            } else {
                 productService.edit(request, file, id);
             }
             return ResponseEntity.ok().body(GenericResponse.success(null, "Success Edit Product"));
@@ -122,8 +121,20 @@ public class ProductsController {
     @SecurityRequirement(name = "Bearer Authentication")
     public ResponseEntity<Object> exel(HttpServletResponse response) {
         try {
-            response.setHeader("Content-Disposition", "attachment; filename=report.xlsx");
+            response.setHeader("Content-Disposition", "attachment; filename=data-product-pet_shop.xlsx");
             return ResponseEntity.ok(productService.generateExel());
+        } catch (Exception e) {
+            log.info(e.getMessage());
+            return ResponseEntity.internalServerError().body(GenericResponse.eror("Internal Server Error!"));
+        }
+    }
+
+    @GetMapping("/report-pdf")
+    @SecurityRequirement(name = "Bearer Authentication")
+    public ResponseEntity<Object> reportPdf(HttpServletResponse response) {
+        try {
+            response.setHeader("Content-Disposition", "Attachment; filename=data-product-pet_shop.pdf");
+            return ResponseEntity.ok(productService.generatePdfReport(response));
         } catch (Exception e) {
             log.info(e.getMessage());
             return ResponseEntity.internalServerError().body(GenericResponse.eror("Internal Server Error!"));

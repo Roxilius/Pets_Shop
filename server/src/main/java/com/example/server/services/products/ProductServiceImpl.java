@@ -3,7 +3,9 @@ package com.example.server.services.products;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.text.NumberFormat;
 import java.util.List;
+import java.util.Locale;
 import java.util.stream.Collectors;
 
 import javax.sql.rowset.serial.SerialBlob;
@@ -34,12 +36,22 @@ import com.example.server.models.Products;
 import com.example.server.repositorys.CategoryRepository;
 import com.example.server.repositorys.ProductsRepository;
 import com.example.server.services.image.ImageService;
+import com.lowagie.text.Document;
+import com.lowagie.text.Font;
+import com.lowagie.text.FontFactory;
+import com.lowagie.text.PageSize;
+import com.lowagie.text.Paragraph;
+import com.lowagie.text.Phrase;
+import com.lowagie.text.pdf.CMYKColor;
+import com.lowagie.text.pdf.PdfPCell;
+import com.lowagie.text.pdf.PdfPTable;
+import com.lowagie.text.pdf.PdfWriter;
 
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.transaction.Transactional;
 
-
 @Service
-public class ProductServiceImpl implements ProductService{
+public class ProductServiceImpl implements ProductService {
     @Autowired
     ProductDao productDao;
     @Autowired
@@ -48,27 +60,31 @@ public class ProductServiceImpl implements ProductService{
     CategoryRepository categoryRepository;
     @Autowired
     ImageService imageService;
+
     @Override
-    public PageResponse<ProductResponse> getAllProducts(String name, String category, int page, int size, String sortBy, String sortOrder, Integer minPrice, Integer maxPrice) {
+    public PageResponse<ProductResponse> getAllProducts(String name, String category, int page, int size, String sortBy,
+            String sortOrder, Integer minPrice, Integer maxPrice) {
         Category categoryName = categoryRepository.findCategoryByName(category);
-        PageResponse<Products> productPage = productDao.getAll(name, categoryName, page, size, sortBy, sortOrder, minPrice, maxPrice);
+        PageResponse<Products> productPage = productDao.getAll(name, categoryName, page, size, sortBy, sortOrder,
+                minPrice, maxPrice);
         List<ProductResponse> productResponse = productPage.getItems().stream()
-        .map(this::toProduct)
-        .collect(Collectors.toList());
-        return PageResponse.success(productResponse, productPage.getPage(), productPage.getSize(), productPage.getTotalItem());
+                .map(this::toProduct)
+                .collect(Collectors.toList());
+        return PageResponse.success(productResponse, productPage.getPage(), productPage.getSize(),
+                productPage.getTotalItem());
     }
 
     public ProductResponse toProduct(Products product) {
         try {
             return ProductResponse.builder()
-            .id(product.getId())
-            .name(product.getName())
-            .price(product.getPrice())
-            .stock(product.getStock())
-            .image(imageService.convertImage(product.getImage()))
-            .category(product.getCategory().getName())
-            .description(product.getDescription())
-            .build();
+                    .id(product.getId())
+                    .name(product.getName())
+                    .price(product.getPrice())
+                    .stock(product.getStock())
+                    .image(imageService.convertImage(product.getImage()))
+                    .category(product.getCategory().getName())
+                    .description(product.getDescription())
+                    .build();
         } catch (IOException | SQLException e) {
             e.printStackTrace();
             return null;
@@ -83,7 +99,7 @@ public class ProductServiceImpl implements ProductService{
 
     @Override
     @Transactional
-    public void add(ProductRequest request, MultipartFile productImage) throws IOException, SQLException{
+    public void add(ProductRequest request, MultipartFile productImage) throws IOException, SQLException {
         if (!productImage.getContentType().startsWith("image")) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Unsupported File Type");
         }
@@ -94,7 +110,7 @@ public class ProductServiceImpl implements ProductService{
             Category category = categoryRepository.findCategoryByName(request.getCategory());
             if (category != null) {
                 newProduct.setCategory(category);
-            } else{
+            } else {
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Category Tidak Ada");
             }
             newProduct.setDescription(request.getCategory());
@@ -102,16 +118,17 @@ public class ProductServiceImpl implements ProductService{
             newProduct.setStock(request.getStock());
             newProduct.setImage(new SerialBlob(productImage.getBytes()));
             productsRepository.save(newProduct);
-        } else{
+        } else {
             product.setDescription(request.getCategory());
             product.setCategory(categoryRepository.findCategoryByName(request.getCategory()));
             product.setStock(product.getStock() + request.getStock());
             productsRepository.save(product);
         }
     }
+
     @Override
     @Transactional
-    public void edit(ProductRequest request, MultipartFile productImage, String id) throws IOException, SQLException{
+    public void edit(ProductRequest request, MultipartFile productImage, String id) throws IOException, SQLException {
         Products product = productsRepository.findById(id).orElse(null);
         product.setName(request.getName());
         product.setDescription(request.getCategory());
@@ -120,7 +137,7 @@ public class ProductServiceImpl implements ProductService{
         Category category = categoryRepository.findCategoryByName(request.getCategory());
         if (category != null) {
             product.setCategory(category);
-        } else{
+        } else {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Category Tidak Ada");
         }
         if (productImage != null) {
@@ -234,7 +251,7 @@ public class ProductServiceImpl implements ProductService{
     }
 
     private void generateTabelData(Row row, Products product, CellStyle cellStyle,
-        int rowNum) {
+            int rowNum) {
         int currentCellIndex = 0;
 
         Cell numberRow = row.createCell(currentCellIndex);
@@ -257,4 +274,65 @@ public class ProductServiceImpl implements ProductService{
         stockRow.setCellValue(product.getStock());
         stockRow.setCellStyle(cellStyle);
     }
+
+    @Override
+    public Document generatePdfReport(HttpServletResponse response) throws IOException {
+
+        Document document = new Document(PageSize.A4);
+
+        PdfWriter.getInstance(document, response.getOutputStream());
+        document.open();
+
+        Font fontTiltle = FontFactory.getFont(FontFactory.TIMES_ROMAN);
+        fontTiltle.setSize(20);
+        Paragraph paragraph = new Paragraph("Laporan Data Product Pet's Shop", fontTiltle);
+        paragraph.setAlignment(Paragraph.ALIGN_CENTER);
+        document.add(paragraph);
+
+        document.add(new Paragraph("\n"));
+
+        PdfPTable table = new PdfPTable(7);
+
+        table.setWidthPercentage(100f);
+        table.setSpacingBefore(5);
+
+        PdfPCell cell = new PdfPCell();
+        cell.setBackgroundColor(CMYKColor.WHITE);
+        // cell.setPadding(5);
+
+        Font font = FontFactory.getFont(FontFactory.TIMES_ROMAN);
+        font.setColor(CMYKColor.BLACK);
+
+        table.addCell(new Phrase("No", font));
+        table.addCell(new Phrase("Name", font));
+        table.addCell(new Phrase("Harga", font));
+        table.addCell(new Phrase("Stock", font));
+        table.addCell(new Phrase("Kategori", font));
+        table.addCell(new Phrase("Deskripsi", font));
+        table.addCell(new Phrase("Total", font));
+        table.completeRow();
+
+        List<Products> products = productsRepository.findAll();
+        int cellNum = 1;
+        if (products.isEmpty()) {
+            table.addCell(String.valueOf("Product Kosong"));
+            table.completeRow();
+        } else
+            for (Products product : products) {
+                table.addCell(String.valueOf(cellNum));
+                table.addCell(product.getName());
+                NumberFormat formatRupiah = NumberFormat.getCurrencyInstance(new Locale("id", "ID"));
+                table.addCell(String.valueOf(formatRupiah.format(product.getPrice())));
+                table.addCell(String.valueOf(product.getStock()));
+                table.addCell(String.valueOf(product.getCategory().getName()));
+                table.addCell(String.valueOf(product.getDescription()));
+                table.addCell(String.valueOf(formatRupiah.format(product.getPrice() * product.getStock())));
+                table.completeRow();
+                cellNum++;
+            }
+        document.add(table);
+        document.close();
+        return document;
+    }
+
 }

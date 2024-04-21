@@ -17,6 +17,7 @@ public class UserResponse {
     private String fullName;
     private LocalDate dateOfBirth;
     private String address;
+    private Integer saldo;
     private String phoneNumber;
     private String gender;
     private String image;

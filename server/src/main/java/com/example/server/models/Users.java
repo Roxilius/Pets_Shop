@@ -49,6 +49,9 @@ public class Users {
     @Column(name = "gender", length = 25)
     private String gender;
 
+    @Column(name = "saldo")
+    private Integer saldo;
+
     @Lob
     @Column(name = "image")
     private Blob image;

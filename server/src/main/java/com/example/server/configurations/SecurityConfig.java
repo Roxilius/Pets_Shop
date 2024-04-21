@@ -51,11 +51,11 @@ public class SecurityConfig {
                                 "/auth/profile"
                         ).hasAuthority(RolesConstant.USER_ROLE)
                         .requestMatchers("/products/**",
-                                "/category/**"
+                                "/category/**",
+                                "/auth/profile"
                         ).hasAuthority(RolesConstant.ADMIN_ROLE)
                         .anyRequest().authenticated())
                 .addFilterAfter(jwtFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
-
 }

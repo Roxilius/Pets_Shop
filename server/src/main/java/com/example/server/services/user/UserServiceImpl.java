@@ -64,6 +64,7 @@ public class UserServiceImpl implements UserService {
             newUser.setGender(request.getGender());
             newUser.setPhoneNumber(request.getPhoneNumber());
             newUser.setEmail(request.getEmail());
+            newUser.setSaldo(0);
             newUser.setPassword(passwordEncoder.encode(request.getPassword()));
             Roles userRoles = rolesRepository.findByRoleName(RolesConstant.USER_ROLE);
             newUser.setRoles(userRoles);
@@ -103,6 +104,7 @@ public class UserServiceImpl implements UserService {
             .id(user.getId())
             .email(user.getEmail())
             .fullName(user.getFullName())
+            .saldo(user.getSaldo())
             .dateOfBirth(user.getDateOfBirth())
             .address(user.getAddress())
             .phoneNumber(user.getPhoneNumber())
