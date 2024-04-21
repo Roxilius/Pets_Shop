@@ -48,6 +48,7 @@ public class SecurityConfig {
                         .requestMatchers("/upload-user-image",
                                 "/cart/**",
                                 "/transaction/**",
+                                "/schedule/**",
                                 "/auth/edit-profile",
                                 "/auth/profile"
                         ).hasAuthority(RolesConstant.USER_ROLE)

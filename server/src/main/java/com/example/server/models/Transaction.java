@@ -1,6 +1,6 @@
 package com.example.server.models;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -27,8 +27,9 @@ public class Transaction {
     @UuidGenerator
     @Column(name = "id")
     private String id;
+
     @Column(name = "transaction_date")
-    private LocalDate date;
+    private LocalDateTime date;
     
     private Integer totalAmount;
 

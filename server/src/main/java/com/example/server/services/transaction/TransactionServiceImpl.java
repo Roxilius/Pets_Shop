@@ -1,6 +1,6 @@
 package com.example.server.services.transaction;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
 
@@ -48,7 +48,7 @@ public class TransactionServiceImpl implements TransactionService {
         }
         Transaction transaction = new Transaction();
         transaction.setUsers(user);
-        transaction.setDate(LocalDate.now());
+        transaction.setDate(LocalDateTime.now());
         Integer totalAmount = 0;
         for (CartItems cartItem : cart.getCartItems()) {
             totalAmount += cartItem.getAmount();
@@ -89,7 +89,7 @@ public class TransactionServiceImpl implements TransactionService {
         Topup topup = new Topup();
         topup.setAmount(amount);
         topup.setUsers(user);
-        topup.setTopupDate(LocalDate.now());
+        topup.setTopupDate(LocalDateTime.now());
         topupRepository.save(topup);
     }
 }

@@ -1,6 +1,6 @@
 package com.example.server.models;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import org.hibernate.annotations.UuidGenerator;
 
@@ -24,7 +24,7 @@ public class Topup {
     private String id;
 
     @Column(name = "topup_date")
-    private LocalDate topupDate;
+    private LocalDateTime topupDate;
 
     @Column(name = "amount")
     private Integer amount;
