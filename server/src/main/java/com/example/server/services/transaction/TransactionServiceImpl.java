@@ -1,8 +1,11 @@
 package com.example.server.services.transaction;
 
+import java.io.IOException;
+import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -11,6 +14,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import com.example.server.data_transfer_object.products.ProductResponse;
+import com.example.server.data_transfer_object.transaction.TransactionResponse;
 import com.example.server.models.Cart;
 import com.example.server.models.CartItems;
 import com.example.server.models.Products;
@@ -23,6 +28,7 @@ import com.example.server.repositorys.ProductsRepository;
 import com.example.server.repositorys.TopupRepository;
 import com.example.server.repositorys.TransactionRepository;
 import com.example.server.repositorys.UsersRepository;
+import com.example.server.services.image.ImageService;
 
 @Service
 public class TransactionServiceImpl implements TransactionService {
@@ -38,8 +44,10 @@ public class TransactionServiceImpl implements TransactionService {
     ProductsRepository productsRepository;
     @Autowired
     TopupRepository topupRepository;
+    @Autowired
+    ImageService imageService;
     @Override
-    public void buy() {
+    public TransactionResponse buy() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         Users user = usersRepository.findUsersByEmail(auth.getName());
         Cart cart = cartRepository.findCartByUsers(user);
@@ -51,7 +59,6 @@ public class TransactionServiceImpl implements TransactionService {
         for (CartItems cartItem : cart.getCartItems()) {
             totalAmount += cartItem.getAmount();
             transaction.getProducts().add(cartItem.getProduct());
-            transactionRepository.save(transaction);
         }
         if (user.getSaldo() < totalAmount) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Your Balance is not Enough, Please Top - Up Your Account Balance");
@@ -77,6 +84,32 @@ public class TransactionServiceImpl implements TransactionService {
 
         user.setSaldo(user.getSaldo() - totalAmount);
         usersRepository.save(user);
+
+        List<ProductResponse> productsList = transaction.getProducts().stream().map(this::toProductResponse).collect(Collectors.toList());
+
+        TransactionResponse response = new TransactionResponse();
+        response.setDate(transaction.getDate());
+        response.setId(transaction.getId());
+        response.setTotalAmount(totalAmount);
+        response.setProducts(productsList);
+        return response;
+    }
+
+    private ProductResponse toProductResponse(Products product) {
+        try {
+            return ProductResponse.builder()
+                    .id(product.getId())
+                    .name(product.getName())
+                    .price(product.getPrice())
+                    .stock(product.getStock())
+                    .image(imageService.convertImage(product.getImage()))
+                    .description(product.getDescription())
+                    .category(product.getCategory().getName())
+                    .build();
+        } catch (IOException | SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     @Override

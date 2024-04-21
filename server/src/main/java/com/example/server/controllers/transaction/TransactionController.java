@@ -28,8 +28,7 @@ public class TransactionController {
     @SecurityRequirement(name = "Bearer Authentication")
     public ResponseEntity<Object> buy(){
         try {
-            transactionService.buy();
-            return ResponseEntity.ok().body(GenericResponse.success(null, "Successfully Buy Products"));
+            return ResponseEntity.ok().body(GenericResponse.success(transactionService.buy(), "Successfully Buy Products"));
         } catch (ResponseStatusException e) {
             log.info(e.getMessage());
             return ResponseEntity.status(e.getStatusCode()).body(GenericResponse.eror(e.getReason()));
