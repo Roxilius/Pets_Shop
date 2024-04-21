@@ -54,7 +54,7 @@ public class TransactionServiceImpl implements TransactionService {
             transactionRepository.save(transaction);
         }
         if (user.getSaldo() < totalAmount) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Your Balance is not Enough");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Your Balance is not Enough, Please Top - Up Your Account Balance");
         }
         transaction.setUsers(user);
         transaction.setDate(LocalDateTime.now());
