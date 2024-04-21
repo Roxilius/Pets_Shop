@@ -75,6 +75,9 @@ public class TransactionServiceImpl implements TransactionService {
 
     @Override
     public void topUp(Integer amount) {
+        if (amount < 0) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "invalid Amount, Failed Top - Up");
+        }
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         Users user = usersRepository.findUsersByEmail(auth.getName());
         user.setSaldo(user.getSaldo() + amount);
