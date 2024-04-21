@@ -47,14 +47,17 @@ public class TransactionServiceImpl implements TransactionService {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Your Cart Is Empty");
         }
         Transaction transaction = new Transaction();
-        transaction.setUsers(user);
-        transaction.setDate(LocalDateTime.now());
         Integer totalAmount = 0;
         for (CartItems cartItem : cart.getCartItems()) {
             totalAmount += cartItem.getAmount();
             transaction.getProducts().add(cartItem.getProduct());
             transactionRepository.save(transaction);
         }
+        if (user.getSaldo() < totalAmount) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Your Balance is not Enough");
+        }
+        transaction.setUsers(user);
+        transaction.setDate(LocalDateTime.now());
         transaction.setTotalAmount(totalAmount);
         transactionRepository.save(transaction);
         System.out.println(transaction.getProducts());
@@ -71,6 +74,9 @@ public class TransactionServiceImpl implements TransactionService {
         cartRepository.delete(cart);
         Set<CartItems> cartItems = cart.getCartItems();
         cartItems.forEach(i -> cartItemsRepository.delete(i));
+
+        user.setSaldo(user.getSaldo() - totalAmount);
+        usersRepository.save(user);
     }
 
     @Override
