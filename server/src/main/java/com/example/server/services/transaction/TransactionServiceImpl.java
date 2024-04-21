@@ -77,6 +77,8 @@ public class TransactionServiceImpl implements TransactionService {
     public void topUp(Integer amount) {
         if (amount < 0) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "invalid Amount, Failed Top - Up");
+        } else if (amount <= 10.000){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Nominal Top - Up is Less, Minimum Top - Up 10k IDR");
         }
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         Users user = usersRepository.findUsersByEmail(auth.getName());
