@@ -86,7 +86,6 @@ public class TransactionServiceImpl implements TransactionService {
         usersRepository.save(user);
 
         List<ProductResponse> productsList = transaction.getProducts().stream().map(this::toProductResponse).collect(Collectors.toList());
-
         TransactionResponse response = new TransactionResponse();
         response.setDate(transaction.getDate());
         response.setId(transaction.getId());
